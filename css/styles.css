@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+}
+
+body {
+    background: url(/images/garland4.png) repeat-x;
+    background-size: 60px;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 10%;
+}
+
+.birthday_edition_container {
+    text-align: center;
+}
+
+.birthday_edition_img {
+    width: 350px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.confetti_img {
+    height: 40px;
+    width: 40px;
+}
