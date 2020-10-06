@@ -1,28 +1,53 @@
+@font-face {
+    font-family: 'Baby Wildy';
+    src: url('/fonts/BabyWildyRegular.eot'); /* IE9 Compat Modes */
+    src: url('/fonts/BabyWildyRegular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('/fonts/BabyWildyRegular.woff2') format('woff2'), /* Super Modern Browsers */
+         url('/fonts/BabyWildyRegular.woff') format('woff'), /* Pretty Modern Browsers */
+         url('/fonts/BabyWildyRegular.ttf')  format('truetype'), /* Safari, Android, iOS */
+         url('/fonts/BabyWildyRegular.svg#BabyWildyRegular') format('svg'); /* Legacy iOS */
+  }
+
 * {
     margin: 0;
 }
 
 body {
-    background: url(/images/garland4.png) repeat-x;
-    background-size: 60px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: url(/images/bg.png);
+    background-repeat: repeat;
+}
+
+.top_border {
+    background: url(/images/garlandfinal.png) round;
+    background-size: 120px;
+    height: 60px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+header {
+    position: absolute;
+    top: 100px;
 }
 
 h1 {
-    text-align: center;
-    margin-top: 10%;
-}
-
-.birthday_edition_container {
-    text-align: center;
+    font-family: 'Baby Wildy', Arial, Helvetica, sans-serif;
+    font-size: 3.5em;
+    color: white;
+    text-shadow: 2px 2px 4px black;
 }
 
 .birthday_edition_img {
-    width: 350px;
+    width: 450px;
     padding-left: 10px;
     padding-right: 10px;
 }
 
 .confetti_img {
-    height: 40px;
-    width: 40px;
+    height: 50px;
+    width: 50px;
 }
