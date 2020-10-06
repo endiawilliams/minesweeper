@@ -14,8 +14,9 @@
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background-image: url(/images/bg.png);
-    background-repeat: repeat;
+    background-color: #6dd2ff;
+    /* background-image: url(/images/bg.png); */
+    /* background-repeat: repeat; */
 }
 
 .top_border {
@@ -50,4 +51,32 @@ h1 {
 .confetti_img {
     height: 50px;
     width: 50px;
+}
+
+.counter_timer {
+    position: absolute;
+    display: flex;
+    top: 250px;
+}
+
+.minesweeper_grid {
+    position: absolute;
+    display: flex;
+    top: 280px;
+}
+
+.col {
+    flex: 1;
+    /* supports any number of columns and ensure they
+    are equal in width and flexible */
+}
+
+.cell {
+    border: 2px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    font-weight: bold;
+    color: white;
 }
