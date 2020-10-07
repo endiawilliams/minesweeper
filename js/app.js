@@ -1,7 +1,9 @@
-let col0, col1, col2, col3,
-col4, col5, col6, col7,
-col8, col9, col10, col11,
-col12, col13, col14, col15 = []
+let allColumns = [
+    [], [], [], [],
+    [], [], [], [],
+    [], [], [], [],
+    [], [], [], []
+]
 
 let tempArray = []
 
@@ -11,15 +13,18 @@ function generateBombs () {
         let randomCol = Math.floor(Math.random() * 16)
         let randomIndex = Math.floor(Math.random() * 16)
 
-        // console.log(tempArray.includes(`${randomCol} + ${randomIndex}`))
-
-        if (tempArray.includes(`${randomCol} + ${randomIndex}`) === false) {
+        if (allColumns[randomCol].includes(randomIndex) === false) {
             tempArray.push(`${randomCol} + ${randomIndex}`)
+            allColumns[randomCol].push(randomIndex)
 
             let targetCol = document.getElementById(`col${randomCol}`)
-            targetCol.querySelector(`.square${randomIndex}`).innerHTML = 0
+            // targetCol.querySelector(`.square${randomIndex}`).innerHTML = B
         }
     }
 }
 
 generateBombs()
+
+function generateNums () {
+
+}
