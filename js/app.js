@@ -11,7 +11,7 @@ function generateBombs () {
         let randomCol = Math.floor(Math.random() * 16)
         let randomIndex = Math.floor(Math.random() * 16)
 
-        console.log(tempArray.includes(`${randomCol} + ${randomIndex}`))
+        // console.log(tempArray.includes(`${randomCol} + ${randomIndex}`))
 
         if (tempArray.includes(`${randomCol} + ${randomIndex}`) === false) {
             tempArray.push(`${randomCol} + ${randomIndex}`)
