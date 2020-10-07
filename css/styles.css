@@ -62,7 +62,7 @@ h1 {
 .minesweeper_grid {
     position: absolute;
     display: flex;
-    top: 280px;
+    top: 300px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
 }
 
@@ -77,8 +77,8 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 10px;
-    width: 10px;
+    height: 15px;
+    width: 15px;
     padding: 5px;
     font-weight: bold;
     color: white;

@@ -22,4 +22,4 @@ function generateBombs () {
     }
 }
 
-document.querySelector('button').addEventListener('click', generateBombs)
+generateBombs()
