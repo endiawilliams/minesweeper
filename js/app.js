@@ -205,19 +205,64 @@ document.getElementById('refresh_button').addEventListener('click', () => {
     location.reload()
 })
 
+let emptyCells = []
+
+function findEmptyCells () {
+    for (let i = 0; i < 256; i++) {
+        if (allCells.includes(i) === false && numCells.includes(i) === false) {
+            emptyCells.push(i)
+        }
+    }
+}
+
+findEmptyCells()
+
+let cellDiv = document.querySelectorAll('.cell')
+
+function displayEmpties () {
+    for (let i = 0; i < emptyCells.length; i++) {
+        let currentIndex = emptyCells[i]
+        console.log(typeof currentIndex)
+        let divAtCurrentIndex = document.querySelector(`#cell${currentIndex}`)
+
+        let cellAbove = currentIndex - 16
+        let cellBelow = currentIndex + 16
+        let cellRight = currentIndex + 1
+        let cellLeft = currentIndex - 1
+        let cellTopRight = currentIndex - 15
+        let cellTopLeft = currentIndex - 17
+        let cellBottomRight = currentIndex + 17
+        let cellBottomLeft = currentIndex + 15
+        
+        if (divAtCurrentIndex.classList.contains('visible_cell')) {
+            // check if cell above is empty
+            
+        }
+    }
+}
+
+const popSound = document.getElementById('pop_sound')
+const balloon = document.querySelector('.balloon')
+
 // I know there is a better way to do this than adding an event listener
 // every cell but I did not have time to figure it out
 
-const div = document.createElement('div')
-
-document.querySelectorAll('.cell').forEach(hiddenCell => {
+cellDiv.forEach(hiddenCell => {
     hiddenCell.addEventListener('click', (e) => {
+        // console.log(e.target.children[0].tagName === 'img')
+        // console.log(e.target.tagName)
+        displayEmpties()
         if (e.target.tagName === 'IMG') {
             e.target.parentNode.classList.remove('evencell', 'oddcell')
             e.target.parentNode.classList.add('visible_cell')
+            popSound.play()
+            alert('You lose! Click the refresh button to play again')
         } else {
             e.target.classList.remove('evencell', 'oddcell')
             e.target.classList.add('visible_cell')
+
+            // bug: cannot figure out how to make balloon sound work unless
+            // user clicks on the actual balloon image and not the div it's contained in
         }
     })
 })
