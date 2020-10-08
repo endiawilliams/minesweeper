@@ -10,7 +10,8 @@ function generateBombs () {
             allCells.push(randomCell)
             count += 1
 
-            document.getElementById(`cell${randomCell}`).innerHTML = 'B'
+            let randomBalloon = Math.floor(Math.random() * 6)
+            document.getElementById(`cell${randomCell}`).innerHTML = `<img src="images/balloon${randomBalloon}.png" alt="balloon" class="balloon">`
         }
     }
 }
@@ -122,7 +123,6 @@ generateNums()
 function calculateNums () {
     for (let i = 0; i < numCells.length; i++) {
         let numCell = numCells[i]
-        console.log(numCell)
 
         let adjacentBombCount = 0
 
@@ -201,3 +201,6 @@ function calculateNums () {
 
 calculateNums()
 
+document.getElementById('refresh_button').addEventListener('click', () => {
+    location.reload()
+})
