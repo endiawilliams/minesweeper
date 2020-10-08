@@ -10,7 +10,7 @@ function generateBombs () {
             allCells.push(randomCell)
             count += 1
 
-            document.getElementById(`cell${randomCell}`).innerHTML = 0
+            document.getElementById(`cell${randomCell}`).innerHTML = 'B'
         }
     }
 }
@@ -19,20 +19,19 @@ generateBombs()
 
 let numCells = []
 
+const rightCol = [
+    15, 31, 47, 63, 79, 95, 111, 127, 
+    143, 159, 175, 191, 207, 223, 239, 255
+]
+
+const leftCol = [
+    0, 16, 32, 48, 64, 80, 96, 112, 
+    128, 144, 160, 176, 192, 208, 224, 240
+]
+
 function generateNums () {
     for (let i = 0; i < 40; i++) {
         let bombCell = allCells[i]
-        console.log(bombCell)
-
-        const rightCol = [
-            15, 31, 47, 63, 79, 95, 111, 127, 
-            143, 159, 175, 191, 207, 223, 239, 255
-        ]
-
-        const leftCol = [
-            0, 16, 32, 48, 64, 80, 96, 112, 
-            128, 144, 160, 176, 192, 208, 224, 240
-        ]
 
         let cellAbove = bombCell - 16
         let cellBelow = bombCell + 16
@@ -46,6 +45,7 @@ function generateNums () {
         // If the index of the cell is less than or equal to 15, it's in the
         // top row, so we don't want to check the cell above it.
         if (bombCell <= 15 === false) {
+            // If there is no bomb and no number in the cell, add 'n' for number
             if (allCells.includes(cellAbove) === false && numCells.includes(cellAbove) === false) {
                 numCells.push(cellAbove)
                 document.getElementById(`cell${cellAbove}`).innerHTML = 'n'
@@ -118,3 +118,86 @@ function generateNums () {
 }
 
 generateNums()
+
+function calculateNums () {
+    for (let i = 0; i < numCells.length; i++) {
+        let numCell = numCells[i]
+        console.log(numCell)
+
+        let adjacentBombCount = 0
+
+        let cellAbove = numCell - 16
+        let cellBelow = numCell + 16
+        let cellRight = numCell + 1
+        let cellLeft = numCell - 1
+        let cellTopRight = numCell - 15
+        let cellTopLeft = numCell - 17
+        let cellBottomRight = numCell + 17
+        let cellBottomLeft = numCell + 15
+
+        if (numCell <= 15 === false) {
+            // Check if there is a bomb in the cell above by checking to see
+            // if the index number exists in the allCells array (which contains
+            // coordinates of all bombs) 
+            if (allCells.includes(cellAbove)) {
+                adjacentBombCount += 1
+            }
+        }
+
+        if (numCell >= 240 === false) {
+            if (allCells.includes(cellBelow)) {
+                adjacentBombCount += 1
+            }
+        }
+
+        // If the numbered cell is in the right column, we do not want to 
+        // check a cell to the right (which does not exist). Therefore, we
+        // only want to run this code if rightCol does not include the index
+        // number of the numbered cell we are checking. 
+        if (rightCol.includes(numCell) === false) {
+            // If the allCells array (which contains the coordinates of all
+            // bombs) includes the cell to the right of the numbered cell,
+            // then run the code
+            if (allCells.includes(cellRight)) {
+                adjacentBombCount += 1
+            }
+        }
+
+        if (leftCol.includes(numCell) === false) {
+            if (allCells.includes(cellLeft)) {
+                adjacentBombCount += 1
+            }
+        }
+
+        // If the index of the cell is NOT in the right column and NOT
+        // in the top row, then we want to check the cell above and to the right.
+        if (rightCol.includes(numCell) === false && numCell <= 15 === false) {
+            if (allCells.includes(cellTopRight)) {
+                adjacentBombCount += 1
+            }
+        }
+
+        if (leftCol.includes(numCell) === false && numCell <= 15 === false) {
+            if (allCells.includes(cellTopLeft)) {
+                adjacentBombCount += 1
+            }
+        }
+
+        if (rightCol.includes(numCell) === false && numCell >= 240 === false) {
+            if (allCells.includes(cellBottomRight)) {
+                adjacentBombCount += 1
+            }
+        }
+
+        if (leftCol.includes(numCell) === false && numCell >= 240 === false) {
+            if (allCells.includes(cellBottomLeft)) {
+                adjacentBombCount += 1
+            }
+        }
+
+        document.getElementById(`cell${numCell}`).innerHTML = adjacentBombCount
+    }
+}
+
+calculateNums()
+
