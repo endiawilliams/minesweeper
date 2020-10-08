@@ -61,11 +61,16 @@ let allCells = []
 function generateBombs () {
     let count = 0
     while (count < 40) {
+        // returns a random number from 0 to 255
         let randomCell = Math.floor(Math.random() * 256)
 
         if (allCells.includes(randomCell) === false) {
             allCells.push(randomCell)
             count += 1
+
+            document.getElementById(`cell${randomCell}`).innerHTML = 0
         }
     }
 }
+
+generateBombs()
