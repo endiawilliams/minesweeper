@@ -204,3 +204,21 @@ calculateNums()
 document.getElementById('refresh_button').addEventListener('click', () => {
     location.reload()
 })
+
+// I know there is a better way to do this than adding an event listener
+// every cell but I did not have time to figure it out
+
+const div = document.createElement('div')
+
+document.querySelectorAll('.cell').forEach(hiddenCell => {
+    hiddenCell.addEventListener('click', (e) => {
+        if (e.target.tagName === 'IMG') {
+            e.target.parentNode.classList.remove('evencell', 'oddcell')
+            e.target.parentNode.classList.add('visible_cell')
+        } else {
+            e.target.classList.remove('evencell', 'oddcell')
+            e.target.classList.add('visible_cell')
+        }
+    })
+})
+
