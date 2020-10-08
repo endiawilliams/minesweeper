@@ -82,25 +82,32 @@ h1 {
     padding: 5px;
     font-weight: bold;
     font-size: 20px;
-    color: white;
-    text-shadow: 0px 0px 2px black;
 }
 
 /* hidden cells */
 .evencol > .oddcell, .oddcol > .evencell {
     background-color: #f6a7c1;
     border: 1px solid #f6a7c1;
+    color: rgba(255, 255, 255, 0)
 }
 
 .oddcol > .oddcell, .evencol > .evencell {
     background-color: #f3d1dc;
     border: 1px solid #f3d1dc;
+    color: rgba(255, 255, 255, 0)
+}
+
+/* hidden cells with balloons */
+.oddcell > img, .evencell > img {
+    opacity: 0;
 }
 
 /* visible cells */
 .visible_cell {
     background-color: #faf0a5;
     border: 1px solid #f7e4a4;
+    color: white;
+    text-shadow: 0px 0px 2px black;
 }
 
 .balloon {

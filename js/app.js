@@ -221,4 +221,3 @@ document.querySelectorAll('.cell').forEach(hiddenCell => {
         }
     })
 })
-
