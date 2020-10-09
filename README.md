@@ -48,7 +48,7 @@ This was really instrumental to me in implementing recursion in my program to ma
 
 I have many plans for future development of my game:
 - Use a modal to display a win or lose message to the user, display their time if they win (and comparing it to their best time) and even give the user an ability to pick between themes and difficulty levels.
-- Add party sounds when the user wins.
+- Add party sounds and streamer animation when the user wins.
 - Make balloons appear on the game board at various intervals after the user loses, each with their own pop sound and animation. 
 - Create a function that clears the game board without refreshing the whole page to make the refresh feature less clunky, and also allowing users to keep track of best time. 
 - Fix the timer. 
