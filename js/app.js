@@ -313,7 +313,15 @@ cellDiv.forEach(hiddenCell => {
             e.currentTarget.classList.remove('evencell', 'oddcell')
             e.currentTarget.classList.add('visible_cell')
             popSound.play()
-            console.log('You lose! Click the refresh button to play again')
+            console.log('You lose! Refresh to play again')
+
+            // looping over the array containing bombs
+            // need to change array name but currently no time
+            for (let i = 0; i < allCells.length; i++) {
+                let bombCell = allCells[i]
+                let bombDiv = document.querySelector(`div#cell${bombCell}`)
+                bombDiv.click()
+            }
         } else {
             e.target.classList.remove('evencell', 'oddcell')
             e.target.classList.add('visible_cell')
