@@ -302,6 +302,10 @@ cellDiv.forEach(hiddenCell => {
     hiddenCell.addEventListener('click', (e) => {
         let cellID = e.target.id
 
+        if (e.target.classList.contains('visible_cell')) {
+            return
+        }
+
         if (cellID.length === 5) {
             // Extracts last character (e.g. index)
             // Note this is a string without parseInt()
@@ -309,7 +313,7 @@ cellDiv.forEach(hiddenCell => {
 
             console.log("We're in cellID length 5")
 
-            if (emptyCells.includes(currentIndex)) {
+            if (emptyCells.includes(currentIndex) && e.target) {
                 revealAdjEmpties(currentIndex)
             }
         } else if (cellID.length === 6) {
