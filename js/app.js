@@ -217,11 +217,7 @@ function findEmptyCells () {
 
 findEmptyCells()
 
-let cellDiv = document.querySelectorAll('.cell')
-
 function revealAdjEmpties (currentIndex) {
-        // let divAtCurrentIndex = document.querySelector(`#cell${currentIndex}`)
-
     let cellAbove = currentIndex - 16
     let cellBelow = currentIndex + 16
     let cellRight = currentIndex + 1
@@ -234,62 +230,36 @@ function revealAdjEmpties (currentIndex) {
     // If the index is not in the top row and the cell above it is 
     // included in the emptyCells array, make it display
     if (currentIndex <= 15 === false && (emptyCells.includes(cellAbove) || numCells.includes(cellAbove))) {
-        console.log(`We're checking ${currentIndex} for cellAbove which is ${cellAbove}`)
         document.getElementById(`cell${cellAbove}`).click()
-        // document.querySelector(`#cell${cellAbove}`).classList.remove('evencell', 'oddcell')
-        // document.querySelector(`#cell${cellAbove}`).classList.add('visible_cell')
     }
 
     if (currentIndex >= 240 === false && (emptyCells.includes(cellBelow) || numCells.includes(cellBelow))) {
-        console.log(`We're checking ${currentIndex} for cellBelow which is ${cellBelow}`)
         document.getElementById(`cell${cellBelow}`).click()
-        // document.querySelector(`#cell${cellBelow}`).classList.remove('evencell', 'oddcell')
-        // document.querySelector(`#cell${cellBelow}`).classList.add('visible_cell')
     }
 
     if (rightCol.includes(currentIndex) === false && (emptyCells.includes(cellRight) || numCells.includes(cellRight))) {
-        console.log(`We're checking ${currentIndex} for cellRight which is ${cellRight}`)
         document.getElementById(`cell${cellRight}`).click()
-        // document.querySelector(`#cell${cellRight}`).classList.remove('evencell', 'oddcell')
-        // document.querySelector(`#cell${cellRight}`).classList.add('visible_cell')
     }
 
     if (leftCol.includes(currentIndex) === false && (emptyCells.includes(cellLeft) || numCells.includes(cellLeft))) {
-        console.log(`We're checking ${currentIndex} for cellLeft which is ${cellLeft}`)
         document.getElementById(`cell${cellLeft}`).click()
-        // document.querySelector(`#cell${cellLeft}`).classList.remove('evencell', 'oddcell')
-        // document.querySelector(`#cell${cellLeft}`).classList.add('visible_cell')
     }
     
     if (rightCol.includes(currentIndex) === false && currentIndex <= 15 === false && (emptyCells.includes(cellTopRight) || numCells.includes(cellTopRight))) {
-        console.log(`We're checking ${currentIndex} for cellTopRight which is ${cellTopRight}`)
         document.getElementById(`cell${cellTopRight}`).click()
-        // document.querySelector(`#cell${cellTopRight}`).classList.remove('evencell', 'oddcell')
-        // document.querySelector(`#cell${cellTopRight}`).classList.add('visible_cell')
     }
 
     if (leftCol.includes(currentIndex) === false && currentIndex <= 15 === false && (emptyCells.includes(cellTopLeft) || numCells.includes(cellTopLeft))) {
-        console.log(`We're checking ${currentIndex} for cellTopLeft which is ${cellTopLeft}`)
         document.getElementById(`cell${cellTopLeft}`).click()
-        // document.querySelector(`#cell${cellTopLeft}`).classList.remove('evencell', 'oddcell')
-        // document.querySelector(`#cell${cellTopLeft}`).classList.add('visible_cell')
     }
     
     if (rightCol.includes(currentIndex) === false && currentIndex >= 240 === false && (emptyCells.includes(cellBottomRight) || numCells.includes(cellBottomRight))) {
-        console.log(`We're checking ${currentIndex} for cellBottomRight which is ${cellBottomRight}`)
         document.getElementById(`cell${cellBottomRight}`).click()
-        // document.querySelector(`#cell${cellBottomRight}`).classList.remove('evencell', 'oddcell')
-        // document.querySelector(`#cell${cellBottomRight}`).classList.add('visible_cell')
     }
 
     if (leftCol.includes(currentIndex) === false && currentIndex >= 240 === false && (emptyCells.includes(cellBottomLeft) || numCells.includes(cellBottomLeft))) {
-        console.log(`We're checking ${currentIndex} for cellBottomLeft which is ${cellBottomLeft}`)
         document.getElementById(`cell${cellBottomLeft}`).click()
-        // document.querySelector(`#cell${cellBottomLeft}`).classList.remove('evencell', 'oddcell')
-        // document.querySelector(`#cell${cellBottomLeft}`).classList.add('visible_cell')
     }
-
-    console.log("We're at the end of revealAdjEmpties")
 }
 
 const popSound = document.getElementById('pop_sound')
@@ -298,9 +268,17 @@ const balloon = document.querySelector('.balloon')
 // I know there is a better way to do this than adding an event listener
 // every cell but I did not have time to figure it out
 
+let cellDiv = document.querySelectorAll('.cell')
+
+// Regular click: 
+
 cellDiv.forEach(hiddenCell => {
     hiddenCell.addEventListener('click', (e) => {
         let cellID = e.target.id
+
+        if (e.target.innerHTML === '<img src="images/cup-cake.png" alt="cupcake" id="cupcake">') {
+            return
+        }
 
         if (e.target.classList.contains('visible_cell')) {
             return
@@ -311,24 +289,18 @@ cellDiv.forEach(hiddenCell => {
             // Note this is a string without parseInt()
             let currentIndex = parseInt(cellID.slice(-1))
 
-            console.log("We're in cellID length 5")
-
             if (emptyCells.includes(currentIndex) && e.target) {
                 revealAdjEmpties(currentIndex)
             }
         } else if (cellID.length === 6) {
             // Extracts last 2 characters etc
             let currentIndex = parseInt(cellID.slice(-2))
-
-            console.log("We're in cellID length 6")
             
             if (emptyCells.includes(currentIndex)) {
                 revealAdjEmpties(currentIndex)
             }
         } else if (cellID.length === 7) {
             let currentIndex = parseInt(cellID.slice(-3))
-
-            console.log("We're in cellID length 7")
             
             if (emptyCells.includes(currentIndex)) {
                 revealAdjEmpties(currentIndex)
@@ -345,6 +317,63 @@ cellDiv.forEach(hiddenCell => {
             e.target.classList.add('visible_cell')
             // bug: cannot figure out how to make balloon sound work unless
             // user clicks on the actual balloon image and not the div it's contained in
+        }
+    })
+})
+
+// Right click flagging: 
+
+cellDiv.forEach(hiddenCell => {
+    hiddenCell.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+
+        if (e.target.classList.contains('visible_cell')) {
+            return
+        }
+
+        // if (e.target.classList.contains('cupcake_img')) {
+
+        // }
+
+        let cellID = e.target.id
+        let currentIndex
+
+        if (cellID.length === 5) {
+            currentIndex = parseInt(cellID.slice(-1))
+        } else if (cellID.length === 6) {
+            currentIndex = parseInt(cellID.slice(-2))
+        } else if (cellID.length === 7) {
+            currentIndex = parseInt(cellID.slice(-3))
+        }
+
+        // If the div is already flagged and it is a bomb square
+        // remove flagged class from the div and generate new balloon in the DOM
+        if (e.target.classList.contains('flagged') && allCells.includes(currentIndex)) {
+            console.log('We are in the first condition')
+            e.target.classList.remove('flagged')
+
+            let randomBalloon = Math.floor(Math.random() * 6)
+            document.getElementById(`cell${currentIndex}`).innerHTML = `<img src="images/balloon${randomBalloon}.png" alt="balloon" class="balloon">`
+        // If the div is already flagged and it is a numbered square
+        // remove flagged class from the div and recalculate the numbers
+        // to re-add the number to the DOM 
+        } else if (e.target.classList.contains('flagged') && numCells.includes(currentIndex)) {
+            console.log('We are in the second condition')
+            e.target.classList.remove('flagged')
+            
+            calculateNums()
+        // If the target is flagged and is not in 
+        // the bombs array or the numbers array, it was empty and
+        // needs to be reset to empty
+        } else if (e.target.classList.contains('flagged')) {
+            console.log('We are in the third condition')
+            document.getElementById(`cell${currentIndex}`).innerHTML = ''
+        // If the target was not flagged, add class flagged and
+        // set innerHTML to add cupcake to the DOM, replacing number or bomb
+        } else {
+            console.log('We are in the last condition')
+            e.target.classList.add('flagged')
+            e.target.innerHTML = '<img src="images/cup-cake.png" alt="cupcake" class="cupcake_img flagged">'
         }
     })
 })

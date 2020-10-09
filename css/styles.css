@@ -102,7 +102,7 @@ h1 {
 }
 
 /* hidden cells with balloons */
-.oddcell > img, .evencell > img {
+.oddcell > img.balloon, .evencell > img.balloon {
     opacity: 0;
 }
 
@@ -132,4 +132,9 @@ h1 {
 #refresh_button {
     height: 40px;
     width: 40px;
+}
+
+.cupcake_img {
+    height: 25px;
+    width: 25px;
 }
