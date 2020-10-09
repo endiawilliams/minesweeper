@@ -270,11 +270,11 @@ const balloon = document.querySelector('.balloon')
 
 let cellDiv = document.querySelectorAll('.cell')
 
-// Regular click: 
+// Regular click:
 
 cellDiv.forEach(hiddenCell => {
     hiddenCell.addEventListener('click', (e) => {
-        let cellID = e.target.id
+        let cellID = e.currentTarget.id
 
         if (e.target.innerHTML === '<img src="images/cup-cake.png" alt="cupcake" id="cupcake">') {
             return
@@ -284,44 +284,50 @@ cellDiv.forEach(hiddenCell => {
             return
         }
 
+        let currentIndex
+
         if (cellID.length === 5) {
             // Extracts last character (e.g. index)
             // Note this is a string without parseInt()
-            let currentIndex = parseInt(cellID.slice(-1))
+            currentIndex = parseInt(cellID.slice(-1))
 
-            if (emptyCells.includes(currentIndex) && e.target) {
+            if (emptyCells.includes(currentIndex)) {
                 revealAdjEmpties(currentIndex)
             }
         } else if (cellID.length === 6) {
             // Extracts last 2 characters etc
-            let currentIndex = parseInt(cellID.slice(-2))
+            currentIndex = parseInt(cellID.slice(-2))
             
             if (emptyCells.includes(currentIndex)) {
                 revealAdjEmpties(currentIndex)
             }
         } else if (cellID.length === 7) {
-            let currentIndex = parseInt(cellID.slice(-3))
+            currentIndex = parseInt(cellID.slice(-3))
             
             if (emptyCells.includes(currentIndex)) {
                 revealAdjEmpties(currentIndex)
             }
         }
 
-        if (e.target.tagName === 'IMG') {
-            e.target.parentNode.classList.remove('evencell', 'oddcell')
-            e.target.parentNode.classList.add('visible_cell')
+        if (allCells.includes(currentIndex)) {
+            e.currentTarget.classList.remove('evencell', 'oddcell')
+            e.currentTarget.classList.add('visible_cell')
             popSound.play()
-            alert('You lose! Click the refresh button to play again')
+            console.log('You lose! Click the refresh button to play again')
         } else {
             e.target.classList.remove('evencell', 'oddcell')
             e.target.classList.add('visible_cell')
-            // bug: cannot figure out how to make balloon sound work unless
-            // user clicks on the actual balloon image and not the div it's contained in
         }
     })
 })
 
-// Right click flagging: 
+// Right click flagging:
+
+// Note that this is currently buggy if clicking on a cupcake image, 
+// but I think I'll be able to debug it if I just add some checks to see 
+// if e.target.tagName = 'IMG' or not so I can target the parent if needed
+
+// It still works if clicking on the containing div.
 
 cellDiv.forEach(hiddenCell => {
     hiddenCell.addEventListener('contextmenu', (e) => {
@@ -330,12 +336,15 @@ cellDiv.forEach(hiddenCell => {
         if (e.target.classList.contains('visible_cell')) {
             return
         }
+        
+        let cellID
 
-        // if (e.target.classList.contains('cupcake_img')) {
+        if (e.target.classList.contains('cupcake_img')) {
+            cellID = e.target.parentNode.id
+        } else {
+            cellID = e.target.id
+        }
 
-        // }
-
-        let cellID = e.target.id
         let currentIndex
 
         if (cellID.length === 5) {
@@ -348,7 +357,7 @@ cellDiv.forEach(hiddenCell => {
 
         // If the div is already flagged and it is a bomb square
         // remove flagged class from the div and generate new balloon in the DOM
-        if (e.target.classList.contains('flagged') && allCells.includes(currentIndex)) {
+        if (e.currentTarget.classList.contains('flagged') && allCells.includes(currentIndex)) {
             console.log('We are in the first condition')
             e.target.classList.remove('flagged')
 
@@ -357,7 +366,7 @@ cellDiv.forEach(hiddenCell => {
         // If the div is already flagged and it is a numbered square
         // remove flagged class from the div and recalculate the numbers
         // to re-add the number to the DOM 
-        } else if (e.target.classList.contains('flagged') && numCells.includes(currentIndex)) {
+        } else if (e.currentTarget.classList.contains('flagged') && numCells.includes(currentIndex)) {
             console.log('We are in the second condition')
             e.target.classList.remove('flagged')
             
@@ -365,15 +374,16 @@ cellDiv.forEach(hiddenCell => {
         // If the target is flagged and is not in 
         // the bombs array or the numbers array, it was empty and
         // needs to be reset to empty
-        } else if (e.target.classList.contains('flagged')) {
+        } else if (e.currentTarget.classList.contains('flagged')) {
             console.log('We are in the third condition')
             document.getElementById(`cell${currentIndex}`).innerHTML = ''
+            e.target.classList.remove('flagged')
         // If the target was not flagged, add class flagged and
         // set innerHTML to add cupcake to the DOM, replacing number or bomb
         } else {
             console.log('We are in the last condition')
             e.target.classList.add('flagged')
-            e.target.innerHTML = '<img src="images/cup-cake.png" alt="cupcake" class="cupcake_img flagged">'
+            e.target.innerHTML = '<img src="images/cup-cake.png" alt="cupcake" class="cupcake_img">'
         }
     })
 })
