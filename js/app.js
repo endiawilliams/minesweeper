@@ -389,7 +389,7 @@ cellDiv.forEach(hiddenCell => {
         // If the div is already flagged and it is a bomb square
         // remove flagged class from the div and generate new balloon in the DOM
         if (e.currentTarget.classList.contains('flagged') && allCells.includes(currentIndex)) {
-            console.log('We are in the first condition')
+            // console.log('We are in the first condition')
             e.target.classList.remove('flagged')
 
             let randomBalloon = Math.floor(Math.random() * 6)
@@ -398,7 +398,7 @@ cellDiv.forEach(hiddenCell => {
         // remove flagged class from the div and recalculate the numbers
         // to re-add the number to the DOM 
         } else if (e.currentTarget.classList.contains('flagged') && numCells.includes(currentIndex)) {
-            console.log('We are in the second condition')
+            // console.log('We are in the second condition')
             e.target.classList.remove('flagged')
             
             calculateNums()
@@ -406,13 +406,13 @@ cellDiv.forEach(hiddenCell => {
         // the bombs array or the numbers array, it was empty and
         // needs to be reset to empty
         } else if (e.currentTarget.classList.contains('flagged')) {
-            console.log('We are in the third condition')
+            // console.log('We are in the third condition')
             document.getElementById(`cell${currentIndex}`).innerHTML = ''
             e.target.classList.remove('flagged')
         // If the target was not flagged, add class flagged and
         // set innerHTML to add cupcake to the DOM, replacing number or bomb
         } else {
-            console.log('We are in the last condition')
+            // console.log('We are in the last condition')
             e.target.classList.add('flagged')
             e.target.innerHTML = '<img src="images/cup-cake.png" alt="cupcake" class="cupcake_img">'
         }
