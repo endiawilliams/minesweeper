@@ -16,7 +16,7 @@ When thinking about a browser game I could build with JavaScript, I was instantl
 
 - When the user clicks on a square, the square will display either a number, an empty square, or a balloon.
 - If the user clicks on a balloon, then then they lose the game.
-- If the user clicks on an empty square, then all adjacent empty squares and will be displayed, and all numbered squares adjacent to those will be displayed as well. 
+- If the user clicks on an empty square, then all adjacent empty squares will be displayed, and all numbered squares adjacent to those will be displayed as well. 
 - If the user clicks on a number, then only that number will be displayed and they must pick another square. 
 - The numbered squares contain an integer representing the number of bombs in adjacent squares, which give hints about where the bombs are placed. 
 - If the user can accurately deduce the location of a balloon, they can "flag" that square by right-clicking on it, which makes a cupcake icon appear on the square. That square cannot be revealed unless the user right-clicks again to remove the cupcake. This is a purely optional functionality that the player can use to protect squares that they know have a balloon in them and to accurately visualize where balloons are placed. 
