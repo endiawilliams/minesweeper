@@ -18,6 +18,16 @@ function generateBombs () {
 
 generateBombs()
 
+let nonBombs = []
+
+function createNonBombs () {
+    for (let i = 0; i < 256; i++) {
+        if (numCells.contains(i) === false) {
+            nonBombs.push(i)
+        }
+    }
+}
+
 let numCells = []
 
 const rightCol = [
@@ -282,6 +292,19 @@ cellDiv.forEach(hiddenCell => {
 
         if (e.target.classList.contains('visible_cell')) {
             return
+        }
+
+        for (let i = 0; i < nonBombs.length; i++) {
+            let nonBombIndex = nonBombs[i]
+            let nonBombDiv = document.getElementById(`cell${nonBombIndex}`)
+
+            if (nonBombDiv.classList.contains('visible_cell')) {
+                if (i === nonBombs.length - 1) {
+                    console.log("You win! Refresh to play again")
+                }
+            } else {
+                return
+            }
         }
 
         let currentIndex
