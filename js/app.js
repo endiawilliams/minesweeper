@@ -235,8 +235,48 @@ function displayEmpties () {
         let cellBottomLeft = currentIndex + 15
         
         if (divAtCurrentIndex.classList.contains('visible_cell')) {
-            // check if cell above is empty
-            
+            // If the index is not in the top row and the cell above it is 
+            // included in the emptyCells array, make it display
+            if (currentIndex <= 15 === false && emptyCells.includes(cellAbove)) {
+                
+                // document.querySelector(`#cell${cellAbove}`).classList.remove('evencell', 'oddcell')
+                // document.querySelector(`#cell${cellAbove}`).classList.add('visible_cell')
+            }
+    
+            if (currentIndex >= 240 === false && emptyCells.includes(cellBelow)) {
+                document.querySelector(`#cell${cellBelow}`).classList.remove('evencell', 'oddcell')
+                document.querySelector(`#cell${cellBelow}`).classList.add('visible_cell')
+            }
+    
+            if (rightCol.includes(currentIndex) === false && emptyCells.includes(cellRight)) {
+                document.querySelector(`#cell${cellRight}`).classList.remove('evencell', 'oddcell')
+                document.querySelector(`#cell${cellRight}`).classList.add('visible_cell')
+            }
+
+            if (leftCol.includes(currentIndex) === false && emptyCells.includes(cellLeft)) {
+                document.querySelector(`#cell${cellLeft}`).classList.remove('evencell', 'oddcell')
+                document.querySelector(`#cell${cellLeft}`).classList.add('visible_cell')
+            }
+    
+            if (rightCol.includes(currentIndex) === false && currentIndex <= 15 === false && emptyCells.includes(cellTopRight)) {
+                document.querySelector(`#cell${cellTopRight}`).classList.remove('evencell', 'oddcell')
+                document.querySelector(`#cell${cellTopRight}`).classList.add('visible_cell')
+            }
+    
+            if (leftCol.includes(currentIndex) === false && currentIndex <= 15 === false && emptyCells.includes(cellTopLeft)) {
+                document.querySelector(`#cell${cellTopLeft}`).classList.remove('evencell', 'oddcell')
+                document.querySelector(`#cell${cellTopLeft}`).classList.add('visible_cell')
+            }
+    
+            if (rightCol.includes(currentIndex) === false && currentIndex >= 240 === false && emptyCells.includes(cellBottomRight)) {
+                document.querySelector(`#cell${cellBottomRight}`).classList.remove('evencell', 'oddcell')
+                document.querySelector(`#cell${cellBottomRight}`).classList.add('visible_cell')
+            }
+    
+            if (leftCol.includes(currentIndex) === false && currentIndex >= 240 === false && emptyCells.includes(cellBottomLeft)) {
+                document.querySelector(`#cell${cellBottomLeft}`).classList.remove('evencell', 'oddcell')
+                document.querySelector(`#cell${cellBottomLeft}`).classList.add('visible_cell')
+            }
         }
     }
 }
@@ -251,7 +291,11 @@ cellDiv.forEach(hiddenCell => {
     hiddenCell.addEventListener('click', (e) => {
         // console.log(e.target.children[0].tagName === 'img')
         // console.log(e.target.tagName)
-        displayEmpties()
+        console.log(e.target.id)
+        // getAdjEmpties()
+        // document.getElementById(`cell${i}`).click();
+        let cellID = e.target.id
+        console.log(cellID)
         if (e.target.tagName === 'IMG') {
             e.target.parentNode.classList.remove('evencell', 'oddcell')
             e.target.parentNode.classList.add('visible_cell')
@@ -260,7 +304,6 @@ cellDiv.forEach(hiddenCell => {
         } else {
             e.target.classList.remove('evencell', 'oddcell')
             e.target.classList.add('visible_cell')
-
             // bug: cannot figure out how to make balloon sound work unless
             // user clicks on the actual balloon image and not the div it's contained in
         }
