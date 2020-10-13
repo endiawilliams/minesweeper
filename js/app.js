@@ -1,3 +1,22 @@
+// generate the grid
+const gridContainer = document.querySelector('.minesweeper_grid')
+function createColumns () {
+    for (let i = 0; i < 16; i++) {
+        let col = document.createElement('div')
+
+        if (i % 2 === 0) {
+            col.classList.add('col', 'evencol')
+        } else {
+            col.classList.add('col', 'oddcol')
+        }
+
+        col.setAttribute('id', `cell${i}`)
+        gridContainer.appendChild(col)
+    }
+}
+
+createColumns()
+
 let allCells = []
 
 function generateBombs () {
