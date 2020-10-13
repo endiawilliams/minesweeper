@@ -1,21 +1,49 @@
 // generate the grid
 const gridContainer = document.querySelector('.minesweeper_grid')
+
 function createColumns () {
     for (let i = 0; i < 16; i++) {
-        let col = document.createElement('div')
+        let div = document.createElement('div')
 
         if (i % 2 === 0) {
-            col.classList.add('col', 'evencol')
+            div.classList.add('col', 'evencol')
         } else {
-            col.classList.add('col', 'oddcol')
+            div.classList.add('col', 'oddcol')
         }
 
-        col.setAttribute('id', `cell${i}`)
-        gridContainer.appendChild(col)
+        div.setAttribute('id', `col${i}`)
+        gridContainer.appendChild(div)
     }
 }
 
 createColumns()
+
+let totalCols = 16
+let totalRows = 16
+
+function createCells () {
+    for (let i = 0; i < totalCols; i++) {
+        for (let j = 0; j < totalRows; j++) {
+            let div = document.createElement('div')
+            let colDiv = document.querySelector(`#col${i}`)
+            // multiply cell number by 16 then add column number to 
+            // create cell ID so that the cells are calculated as +1 
+            // to the right in every row
+            let cellID = (j * 16) + i
+
+            if (j % 2 === 0) {
+                div.classList.add('cell', 'evencell')
+            } else {
+                div.classList.add('cell', 'oddcell')
+            }
+
+            colDiv.appendChild(div)
+            div.setAttribute('id', `cell${cellID}`)
+        }
+    }
+}
+
+createCells()
 
 let allCells = []
 
