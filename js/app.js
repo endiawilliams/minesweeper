@@ -45,7 +45,11 @@ function createCells () {
 
 createCells()
 
-let allCells = []
+let bombCells = []
+let numCells = []
+let nonBombs = []
+let emptyCells = []
+let visibleCells = []
 
 function generateBombs () {
     let count = 0
@@ -53,8 +57,8 @@ function generateBombs () {
         // returns a random number from 0 to 255
         let randomCell = Math.floor(Math.random() * 256)
 
-        if (allCells.includes(randomCell) === false) {
-            allCells.push(randomCell)
+        if (bombCells.includes(randomCell) === false) {
+            bombCells.push(randomCell)
             count += 1
 
             let randomBalloon = Math.floor(Math.random() * 6)
@@ -65,8 +69,6 @@ function generateBombs () {
 
 generateBombs()
 
-let nonBombs = []
-
 function createNonBombs () {
     for (let i = 0; i < 256; i++) {
         if (numCells.contains(i) === false) {
@@ -74,8 +76,6 @@ function createNonBombs () {
         }
     }
 }
-
-let numCells = []
 
 const rightCol = [
     15, 31, 47, 63, 79, 95, 111, 127, 
@@ -89,7 +89,7 @@ const leftCol = [
 
 function generateNums () {
     for (let i = 0; i < 40; i++) {
-        let bombCell = allCells[i]
+        let bombCell = bombCells[i]
 
         let cellAbove = bombCell - 16
         let cellBelow = bombCell + 16
@@ -104,7 +104,7 @@ function generateNums () {
         // top row, so we don't want to check the cell above it.
         if (bombCell <= 15 === false) {
             // If there is no bomb and no number in the cell, add 'n' for number
-            if (allCells.includes(cellAbove) === false && numCells.includes(cellAbove) === false) {
+            if (bombCells.includes(cellAbove) === false && numCells.includes(cellAbove) === false) {
                 numCells.push(cellAbove)
                 document.getElementById(`cell${cellAbove}`).innerHTML = 'n'
             }
@@ -113,7 +113,7 @@ function generateNums () {
         // If the index of the cell is greater than or equal to 240, it's in the
         // bottom row, so we don't want to check the cell below it.
         if (bombCell >= 240 === false) {
-            if (allCells.includes(cellBelow) === false && numCells.includes(cellBelow) === false) {
+            if (bombCells.includes(cellBelow) === false && numCells.includes(cellBelow) === false) {
                 numCells.push(cellBelow)
                 document.getElementById(`cell${cellBelow}`).innerHTML = 'n'
             }
@@ -122,7 +122,7 @@ function generateNums () {
         // If the index of the cell is in the right column, don't check the
         // cell to the right.
         if (rightCol.includes(bombCell) === false) {
-            if (allCells.includes(cellRight) === false && numCells.includes(cellRight) === false) {
+            if (bombCells.includes(cellRight) === false && numCells.includes(cellRight) === false) {
                 numCells.push(cellRight)
                 document.getElementById(`cell${cellRight}`).innerHTML = 'n'
             }
@@ -131,7 +131,7 @@ function generateNums () {
         // If the index of the cell is in the left column, don't check the
         // cell to the left. 
         if (leftCol.includes(bombCell) === false) {
-            if (allCells.includes(cellLeft) === false && numCells.includes(cellLeft) === false) {
+            if (bombCells.includes(cellLeft) === false && numCells.includes(cellLeft) === false) {
                 numCells.push(cellLeft)
                 document.getElementById(`cell${cellLeft}`).innerHTML = 'n'
             }
@@ -140,7 +140,7 @@ function generateNums () {
         // If the index of the cell is NOT in the right column and NOT
         // in the top row, then we want to check the cell above and to the right.
         if (rightCol.includes(bombCell) === false && bombCell <= 15 === false) {
-            if (allCells.includes(cellTopRight) === false && numCells.includes(cellTopRight) === false) {
+            if (bombCells.includes(cellTopRight) === false && numCells.includes(cellTopRight) === false) {
                 numCells.push(cellTopRight)
                 document.getElementById(`cell${cellTopRight}`).innerHTML = 'n'
             }
@@ -149,7 +149,7 @@ function generateNums () {
         // If the index of the cell is NOT in the left column and NOT
         // in the top row, then we want to check the cell above and to the left.
         if (leftCol.includes(bombCell) === false && bombCell <= 15 === false) {
-            if (allCells.includes(cellTopLeft) === false && numCells.includes(cellTopLeft) === false) {
+            if (bombCells.includes(cellTopLeft) === false && numCells.includes(cellTopLeft) === false) {
                 numCells.push(cellTopLeft)
                 document.getElementById(`cell${cellTopLeft}`).innerHTML = 'n'
             }
@@ -158,7 +158,7 @@ function generateNums () {
         // If the index of the cell is NOT in the right column and NOT
         // in the bottom row, then we want to check the cell below and to the right.
         if (rightCol.includes(bombCell) === false && bombCell >= 240 === false) {
-            if (allCells.includes(cellBottomRight) === false && numCells.includes(cellBottomRight) === false) {
+            if (bombCells.includes(cellBottomRight) === false && numCells.includes(cellBottomRight) === false) {
                 numCells.push(cellBottomRight)
                 document.getElementById(`cell${cellBottomRight}`).innerHTML = 'n'
             }
@@ -167,7 +167,7 @@ function generateNums () {
         // If the index of the cell is NOT in the left column and NOT
         // in the bottom row, then we want to check the cell below and to the left.
         if (leftCol.includes(bombCell) === false && bombCell >= 240 === false) {
-            if (allCells.includes(cellBottomLeft) === false && numCells.includes(cellBottomLeft) === false) {
+            if (bombCells.includes(cellBottomLeft) === false && numCells.includes(cellBottomLeft) === false) {
                 numCells.push(cellBottomLeft)
                 document.getElementById(`cell${cellBottomLeft}`).innerHTML = 'n'
             }
@@ -194,15 +194,14 @@ function calculateNums () {
 
         if (numCell <= 15 === false) {
             // Check if there is a bomb in the cell above by checking to see
-            // if the index number exists in the allCells array (which contains
-            // coordinates of all bombs) 
-            if (allCells.includes(cellAbove)) {
+            // if the index number exists in the bombCells array
+            if (bombCells.includes(cellAbove)) {
                 adjacentBombCount += 1
             }
         }
 
         if (numCell >= 240 === false) {
-            if (allCells.includes(cellBelow)) {
+            if (bombCells.includes(cellBelow)) {
                 adjacentBombCount += 1
             }
         }
@@ -212,16 +211,15 @@ function calculateNums () {
         // only want to run this code if rightCol does not include the index
         // number of the numbered cell we are checking. 
         if (rightCol.includes(numCell) === false) {
-            // If the allCells array (which contains the coordinates of all
-            // bombs) includes the cell to the right of the numbered cell,
-            // then run the code
-            if (allCells.includes(cellRight)) {
+            // If the bombCells array includes the cell to the right of the 
+            // numbered cell, then run the code
+            if (bombCells.includes(cellRight)) {
                 adjacentBombCount += 1
             }
         }
 
         if (leftCol.includes(numCell) === false) {
-            if (allCells.includes(cellLeft)) {
+            if (bombCells.includes(cellLeft)) {
                 adjacentBombCount += 1
             }
         }
@@ -229,25 +227,25 @@ function calculateNums () {
         // If the index of the cell is NOT in the right column and NOT
         // in the top row, then we want to check the cell above and to the right.
         if (rightCol.includes(numCell) === false && numCell <= 15 === false) {
-            if (allCells.includes(cellTopRight)) {
+            if (bombCells.includes(cellTopRight)) {
                 adjacentBombCount += 1
             }
         }
 
         if (leftCol.includes(numCell) === false && numCell <= 15 === false) {
-            if (allCells.includes(cellTopLeft)) {
+            if (bombCells.includes(cellTopLeft)) {
                 adjacentBombCount += 1
             }
         }
 
         if (rightCol.includes(numCell) === false && numCell >= 240 === false) {
-            if (allCells.includes(cellBottomRight)) {
+            if (bombCells.includes(cellBottomRight)) {
                 adjacentBombCount += 1
             }
         }
 
         if (leftCol.includes(numCell) === false && numCell >= 240 === false) {
-            if (allCells.includes(cellBottomLeft)) {
+            if (bombCells.includes(cellBottomLeft)) {
                 adjacentBombCount += 1
             }
         }
@@ -262,11 +260,9 @@ document.getElementById('refresh_button').addEventListener('click', () => {
     location.reload()
 })
 
-let emptyCells = []
-
 function findEmptyCells () {
     for (let i = 0; i < 256; i++) {
-        if (allCells.includes(i) === false && numCells.includes(i) === false) {
+        if (bombCells.includes(i) === false && numCells.includes(i) === false) {
             emptyCells.push(i)
         }
     }
@@ -322,6 +318,64 @@ function revealAdjEmpties (currentIndex) {
 const popSound = document.getElementById('pop_sound')
 const balloon = document.querySelector('.balloon')
 
+function winCheck () {
+    let nonBombCells = 216
+
+    if (visibleCells.length === nonBombCells) {
+        console.log('you win!')
+    }
+
+    // let allNumsRevealed = false
+    // let allEmptiesRevealed = false
+
+    // for (let i = 0; i < numCells.length; i++) {
+    //     let numCellIndex = numCells[i]
+    //     let numCellDiv = document.getElementById(`cell${numCellIndex}`)
+    //     // console.log(numCellDiv.classList.contains('visible_cell') === false)
+
+    //     if (numCellDiv.classList.contains('visible_cell') === false) {
+    //         // console.log(`allNumsRevealed is ${allNumsRevealed}`)
+    //         return
+    //     }
+
+    //     if (i === numCells.length) {
+    //         allNumsRevealed = true
+    //     }
+    // }
+
+    // for (let i = 0; i < emptyCells.length; i++) {
+    //     let emptyCellIndex = emptyCells[i]
+    //     let emptyCellDiv = document.getElementById(`cell${emptyCellIndex}`)
+
+    //     if (emptyCellDiv.classList.contains('visible_cell') === false) {
+    //         console.log(`allEmptiesRevealed is ${allEmptiesRevealed}`)
+    //         return
+    //     }
+
+    //     if (i === emptyCells.length) {
+    //         allEmptiesRevealed = true
+    //     }
+    // }
+
+    // if (allNumsRevealed && allEmptiesRevealed) {
+    //     console.log("You win!")
+    // }
+}
+
+// added to test winCheck()
+let button = document.getElementById('reveal')
+button.addEventListener('click', function() {
+    for (let i = 0; i < 256; i++) {
+        let divToCheck = document.getElementById(`cell${i}`)
+        
+        if (numCells.includes(i) || emptyCells.includes(i)) {
+            divToCheck.click()
+            // divToCheck.classList.remove('oddcell', 'evencell')
+            // divToCheck.classList.add('visible_cell')
+        }
+    }
+})
+
 // I know there is a better way to do this than adding an event listener
 // every cell but I did not have time to figure it out
 
@@ -333,7 +387,7 @@ cellDiv.forEach(hiddenCell => {
     hiddenCell.addEventListener('click', (e) => {
         let cellID = e.currentTarget.id
 
-        if (e.target.innerHTML === '<img src="images/cup-cake.png" alt="cupcake" id="cupcake">') {
+        if (e.target.innerHTML === '<img src="images/cup-cake.png" alt="cupcake" class="cupcake_img">') {
             return
         }
 
@@ -341,23 +395,11 @@ cellDiv.forEach(hiddenCell => {
             return
         }
 
-        for (let i = 0; i < nonBombs.length; i++) {
-            let nonBombIndex = nonBombs[i]
-            let nonBombDiv = document.getElementById(`cell${nonBombIndex}`)
-
-            if (nonBombDiv.classList.contains('visible_cell')) {
-                if (i === nonBombs.length - 1) {
-                    console.log("You win! Refresh to play again")
-                }
-            } else {
-                return
-            }
-        }
+        visibleCells.push(cellID)
 
         let currentIndex
 
         if (cellID.length === 5) {
-            // Extracts last character (e.g. index)
             // Note this is a string without parseInt()
             currentIndex = parseInt(cellID.slice(-1))
 
@@ -365,7 +407,6 @@ cellDiv.forEach(hiddenCell => {
                 revealAdjEmpties(currentIndex)
             }
         } else if (cellID.length === 6) {
-            // Extracts last 2 characters etc
             currentIndex = parseInt(cellID.slice(-2))
             
             if (emptyCells.includes(currentIndex)) {
@@ -379,7 +420,10 @@ cellDiv.forEach(hiddenCell => {
             }
         }
 
-        if (allCells.includes(currentIndex)) {
+        // new win check:
+        winCheck()
+
+        if (bombCells.includes(currentIndex)) {
             e.currentTarget.classList.remove('evencell', 'oddcell')
             e.currentTarget.classList.add('visible_cell')
             popSound.play()
@@ -387,8 +431,8 @@ cellDiv.forEach(hiddenCell => {
 
             // looping over the array containing bombs
             // need to change array name but currently no time
-            for (let i = 0; i < allCells.length; i++) {
-                let bombCell = allCells[i]
+            for (let i = 0; i < bombCells.length; i++) {
+                let bombCell = bombCells[i]
                 let bombDiv = document.querySelector(`div#cell${bombCell}`)
                 bombDiv.click()
             }
@@ -435,7 +479,7 @@ cellDiv.forEach(hiddenCell => {
 
         // If the div is already flagged and it is a bomb square
         // remove flagged class from the div and generate new balloon in the DOM
-        if (e.currentTarget.classList.contains('flagged') && allCells.includes(currentIndex)) {
+        if (e.currentTarget.classList.contains('flagged') && bombCells.includes(currentIndex)) {
             // console.log('We are in the first condition')
             e.target.classList.remove('flagged')
 
