@@ -336,8 +336,19 @@ function winCheck () {
     }
 }
 
-function loseCheck(currentIndex) {
+function loseCheck (currentIndex) {
     if (bombCells.includes(currentIndex)) {
+        popSound.play()
+
+        for (let i = 0; i < bombCells.length; i++) {
+            let bombDiv = document.getElementById(`cell${bombCells[i]}`)
+
+            if (bombDiv.classList.contains('flagged') === false) {
+                bombDiv.classList.add('visible_cell')
+                bombDiv.classList.remove('evencell', 'oddcell')
+            }
+        }
+
         modal.style.display = "flex";
         modalContent.innerHTML = 
         '<p>You lose. :( Play again?</p><br /><img src="images/refreshbutton.png" alt="refresh button" class="refresh_button">'
@@ -396,8 +407,6 @@ cellDiv.forEach(hiddenCell => {
         if (bombCells.includes(currentIndex)) {
             e.currentTarget.classList.remove('evencell', 'oddcell')
             e.currentTarget.classList.add('visible_cell')
-            popSound.play()
-            console.log('You lose! Refresh to play again')
 
             // looping over the array containing bombs
             // need to change array name but currently no time
