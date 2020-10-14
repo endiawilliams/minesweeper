@@ -325,15 +325,22 @@ function revealAdjEmpties (currentIndex) {
 const popSound = document.getElementById('pop_sound')
 const balloon = document.querySelector('.balloon')
 const modal = document.getElementById('win_lose_modal')
+const nonBombCells = numCells.length + emptyCells.length
+const modalContent = document.getElementById('modal_content')
 
 function winCheck () {
-    let nonBombCells = numCells.length + emptyCells.length
-
     if (visibleCells.length === nonBombCells) {
         modal.style.display = "flex";
-        let modalContent = document.getElementById('modal_content')
         modalContent.innerHTML = 
         '<p>You win! Play again?</p><br /><img src="images/refreshbutton.png" alt="refresh button" class="refresh_button">'
+    }
+}
+
+function loseCheck(currentIndex) {
+    if (bombCells.includes(currentIndex)) {
+        modal.style.display = "flex";
+        modalContent.innerHTML = 
+        '<p>You lose. :( Play again?</p><br /><img src="images/refreshbutton.png" alt="refresh button" class="refresh_button">'
     }
 }
 
@@ -381,8 +388,10 @@ cellDiv.forEach(hiddenCell => {
             }
         }
 
+        // console.log(cellID)
         // new win check:
         winCheck()
+        loseCheck(currentIndex)
 
         if (bombCells.includes(currentIndex)) {
             e.currentTarget.classList.remove('evencell', 'oddcell')
