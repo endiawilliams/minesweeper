@@ -324,57 +324,7 @@ function winCheck () {
     if (visibleCells.length === nonBombCells) {
         console.log('you win!')
     }
-
-    // let allNumsRevealed = false
-    // let allEmptiesRevealed = false
-
-    // for (let i = 0; i < numCells.length; i++) {
-    //     let numCellIndex = numCells[i]
-    //     let numCellDiv = document.getElementById(`cell${numCellIndex}`)
-    //     // console.log(numCellDiv.classList.contains('visible_cell') === false)
-
-    //     if (numCellDiv.classList.contains('visible_cell') === false) {
-    //         // console.log(`allNumsRevealed is ${allNumsRevealed}`)
-    //         return
-    //     }
-
-    //     if (i === numCells.length) {
-    //         allNumsRevealed = true
-    //     }
-    // }
-
-    // for (let i = 0; i < emptyCells.length; i++) {
-    //     let emptyCellIndex = emptyCells[i]
-    //     let emptyCellDiv = document.getElementById(`cell${emptyCellIndex}`)
-
-    //     if (emptyCellDiv.classList.contains('visible_cell') === false) {
-    //         console.log(`allEmptiesRevealed is ${allEmptiesRevealed}`)
-    //         return
-    //     }
-
-    //     if (i === emptyCells.length) {
-    //         allEmptiesRevealed = true
-    //     }
-    // }
-
-    // if (allNumsRevealed && allEmptiesRevealed) {
-    //     console.log("You win!")
-    // }
 }
-
-// added to test winCheck()
-let button = document.getElementById('reveal')
-button.addEventListener('click', function() {
-    for (let i = 0; i < 256; i++) {
-        let divToCheck = document.getElementById(`cell${i}`)
-        
-        if (numCells.includes(i) || emptyCells.includes(i)) {
-            divToCheck.click()
-            // divToCheck.classList.remove('oddcell', 'evencell')
-            // divToCheck.classList.add('visible_cell')
-        }
-    }
-})
 
 // I know there is a better way to do this than adding an event listener
 // every cell but I did not have time to figure it out
