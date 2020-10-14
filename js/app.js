@@ -1,3 +1,6 @@
+// NOTE TO SELF: the numCells and/or emptyCells array is not
+// populating properly, since their lengths are not adding up to 216
+
 // generate the grid
 const gridContainer = document.querySelector('.minesweeper_grid')
 
@@ -256,8 +259,12 @@ function calculateNums () {
 
 calculateNums()
 
-document.getElementById('refresh_button').addEventListener('click', () => {
-    location.reload()
+let refreshButton = document.querySelectorAll('.refresh_button')
+
+refreshButton.forEach(button => {
+    button.addEventListener('click', () => {
+        location.reload()
+    })
 })
 
 function findEmptyCells () {
@@ -317,12 +324,16 @@ function revealAdjEmpties (currentIndex) {
 
 const popSound = document.getElementById('pop_sound')
 const balloon = document.querySelector('.balloon')
+const modal = document.getElementById('win_lose_modal')
 
 function winCheck () {
-    let nonBombCells = 216
+    let nonBombCells = numCells.length + emptyCells.length
 
     if (visibleCells.length === nonBombCells) {
-        console.log('you win!')
+        modal.style.display = "flex";
+        let modalContent = document.getElementById('modal_content')
+        modalContent.innerHTML = 
+        '<p>You win! Play again?</p><br /><img src="images/refreshbutton.png" alt="refresh button" class="refresh_button">'
     }
 }
 

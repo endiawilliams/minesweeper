@@ -129,7 +129,7 @@ h1 {
     width: 640px;
 }
 
-#refresh_button {
+.refresh_button {
     height: 40px;
     width: 40px;
 }
@@ -138,3 +138,27 @@ h1 {
     height: 25px;
     width: 25px;
 }
+
+.modal {
+    display: none;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    top: 300px;
+    width: 640px;
+    height: 640px; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4);
+  }
+  
+  #modal_content {
+    background-color: #f3d1dc;
+    border-radius: 5px;
+    color: black;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    height: 25%;
+    width: 50%;
+  }
