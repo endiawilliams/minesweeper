@@ -70,6 +70,15 @@ h1 {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
 }
 
+.no_select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .col {
     flex: 1;
     /* supports any number of columns and ensure they

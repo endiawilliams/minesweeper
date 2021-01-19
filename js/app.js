@@ -4,7 +4,7 @@
 // generate the grid
 const gridContainer = document.querySelector('.minesweeper_grid')
 
-function createColumns () {
+const createColumns = () => {
     for (let i = 0; i < 16; i++) {
         let div = document.createElement('div')
 
@@ -24,7 +24,7 @@ createColumns()
 let totalCols = 16
 let totalRows = 16
 
-function createCells () {
+const createCells = () => {
     for (let i = 0; i < totalCols; i++) {
         for (let j = 0; j < totalRows; j++) {
             let div = document.createElement('div')
@@ -54,27 +54,33 @@ let nonBombs = []
 let emptyCells = []
 let visibleCells = []
 
-function generateBombs () {
+const placeBomb = (randomCell) => {
+    let randomBomb = Math.floor(Math.random() * 6)
+    document.getElementById(`cell${randomCell}`).innerHTML = `<img src="images/balloon${randomBomb}.png" alt="balloon" class="balloon">`
+}
+
+const createBombs = () => {
     let count = 0
+
     while (count < 40) {
         // returns a random number from 0 to 255
         let randomCell = Math.floor(Math.random() * 256)
 
-        if (bombCells.includes(randomCell) === false) {
+        if (!bombCells.includes(randomCell)) {
             bombCells.push(randomCell)
             count += 1
 
-            let randomBalloon = Math.floor(Math.random() * 6)
-            document.getElementById(`cell${randomCell}`).innerHTML = `<img src="images/balloon${randomBalloon}.png" alt="balloon" class="balloon">`
+            console.log('hi')
+            placeBomb(randomCell)
         }
     }
 }
 
-generateBombs()
+createBombs()
 
 function createNonBombs () {
     for (let i = 0; i < 256; i++) {
-        if (numCells.contains(i) === false) {
+        if (!numCells.contains(i)) {
             nonBombs.push(i)
         }
     }
