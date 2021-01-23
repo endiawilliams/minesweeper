@@ -159,9 +159,9 @@ h1 {
     height: 640px; 
     overflow: auto; 
     background-color: rgba(0,0,0,0.4);
-  }
+}
   
-  #modal_content {
+#modal_content {
     background-color: #f3d1dc;
     border-radius: 5px;
     margin: auto;
@@ -169,4 +169,4 @@ h1 {
     border: 1px solid #888;
     height: 25%;
     width: 50%;
-  }
+}

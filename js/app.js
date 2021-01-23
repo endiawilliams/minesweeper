@@ -4,8 +4,11 @@
 // generate the grid
 const gridContainer = document.querySelector('.minesweeper_grid')
 
+const totalCols = 16
+const totalRows = 16
+
 const createColumns = () => {
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < totalCols; i++) {
         let div = document.createElement('div')
 
         if (i % 2 === 0) {
@@ -20,9 +23,6 @@ const createColumns = () => {
 }
 
 createColumns()
-
-let totalCols = 16
-let totalRows = 16
 
 const createCells = () => {
     for (let i = 0; i < totalCols; i++) {
@@ -50,7 +50,6 @@ createCells()
 
 let bombCells = []
 let numCells = []
-let nonBombs = []
 let emptyCells = []
 let visibleCells = []
 
@@ -69,8 +68,6 @@ const createBombs = () => {
         if (!bombCells.includes(randomCell)) {
             bombCells.push(randomCell)
             count += 1
-
-            console.log('hi')
             placeBomb(randomCell)
         }
     }
@@ -78,13 +75,15 @@ const createBombs = () => {
 
 createBombs()
 
-function createNonBombs () {
-    for (let i = 0; i < 256; i++) {
-        if (!numCells.contains(i)) {
-            nonBombs.push(i)
-        }
-    }
-}
+const topRow = [
+    0, 1, 2, 3, 4, 5, 6, 7, 
+    8, 9, 10, 11, 12, 13, 14, 15
+]
+
+const bottomRow = [
+    240, 241, 242, 243, 244, 245, 246, 247,
+    248, 249, 250, 251, 252, 253, 254, 255
+]
 
 const rightCol = [
     15, 31, 47, 63, 79, 95, 111, 127, 
@@ -96,7 +95,7 @@ const leftCol = [
     128, 144, 160, 176, 192, 208, 224, 240
 ]
 
-function generateNums () {
+function createNums () {
     for (let i = 0; i < 40; i++) {
         let bombCell = bombCells[i]
 
@@ -184,7 +183,7 @@ function generateNums () {
     }
 }
 
-generateNums()
+createNums()
 
 function calculateNums () {
     for (let i = 0; i < numCells.length; i++) {
@@ -265,17 +264,9 @@ function calculateNums () {
 
 calculateNums()
 
-let refreshButton = document.querySelectorAll('.refresh_button')
-
-refreshButton.forEach(button => {
-    button.addEventListener('click', () => {
-        location.reload()
-    })
-})
-
 function findEmptyCells () {
     for (let i = 0; i < 256; i++) {
-        if (bombCells.includes(i) === false && numCells.includes(i) === false) {
+        if (!bombCells.includes(i) && !numCells.includes(i)) {
             emptyCells.push(i)
         }
     }
@@ -283,7 +274,14 @@ function findEmptyCells () {
 
 findEmptyCells()
 
-function revealAdjEmpties (currentIndex) {
+const displayCell = (elem) => {
+    console.log('displayCell is being called')
+    console.log(elem)
+    elem.classList.remove('evencell', 'oddcell')
+    elem.classList.add('visible_cell')
+}
+
+const revealAdjEmpties = (currentIndex) => {
     let cellAbove = currentIndex - 16
     let cellBelow = currentIndex + 16
     let cellRight = currentIndex + 1
@@ -293,38 +291,86 @@ function revealAdjEmpties (currentIndex) {
     let cellBottomRight = currentIndex + 17
     let cellBottomLeft = currentIndex + 15
 
-    // If the index is not in the top row and the cell above it is 
-    // included in the emptyCells array, make it display
-    if (currentIndex <= 15 === false && (emptyCells.includes(cellAbove) || numCells.includes(cellAbove))) {
-        document.getElementById(`cell${cellAbove}`).click()
+    // If the cell is not in the top row and the above cell is either empty or numbered, display the above cell. Then, if the cell is empty, call this function again.
+    if (!topRow.includes(currentIndex) && !visibleCells.includes(cellAbove) && (emptyCells.includes(cellAbove) || numCells.includes(cellAbove))) {
+        let elem = document.getElementById(`cell${cellAbove}`)
+        displayCell(elem)
+        visibleCells.push(cellAbove)
+
+        if (emptyCells.includes(cellAbove)) {
+            revealAdjEmpties(cellAbove)
+        }
     }
 
-    if (currentIndex >= 240 === false && (emptyCells.includes(cellBelow) || numCells.includes(cellBelow))) {
-        document.getElementById(`cell${cellBelow}`).click()
+    if (!bottomRow.includes(currentIndex) && !visibleCells.includes(cellBelow) && (emptyCells.includes(cellBelow) || numCells.includes(cellBelow))) {
+        let elem = document.getElementById(`cell${cellBelow}`)
+        displayCell(elem)
+        visibleCells.push(cellBelow)
+
+        if (emptyCells.includes(cellBelow)) {
+            revealAdjEmpties(cellBelow)
+        }
     }
 
-    if (rightCol.includes(currentIndex) === false && (emptyCells.includes(cellRight) || numCells.includes(cellRight))) {
-        document.getElementById(`cell${cellRight}`).click()
+    if (!rightCol.includes(currentIndex) && !visibleCells.includes(cellRight) && (emptyCells.includes(cellRight) || numCells.includes(cellRight))) {
+        let elem = document.getElementById(`cell${cellRight}`)
+        displayCell(elem)
+        visibleCells.push(cellRight)
+
+        if (emptyCells.includes(cellRight)) {
+            revealAdjEmpties(cellRight)
+        }
     }
 
-    if (leftCol.includes(currentIndex) === false && (emptyCells.includes(cellLeft) || numCells.includes(cellLeft))) {
-        document.getElementById(`cell${cellLeft}`).click()
+    if (!leftCol.includes(currentIndex) && !visibleCells.includes(cellLeft) && (emptyCells.includes(cellLeft) || numCells.includes(cellLeft))) {
+        let elem = document.getElementById(`cell${cellLeft}`)
+        displayCell(elem)
+        visibleCells.push(cellLeft)
+
+        if (emptyCells.includes(cellLeft)) {
+            revealAdjEmpties(cellLeft)
+        }
     }
     
-    if (rightCol.includes(currentIndex) === false && currentIndex <= 15 === false && (emptyCells.includes(cellTopRight) || numCells.includes(cellTopRight))) {
-        document.getElementById(`cell${cellTopRight}`).click()
+    // If the cell is not in the right column or top row, then we know there is a cell above and to the right of it. If that cell is either empty or numbered, then reveal it. If it's empty, call the function again.
+    if (!rightCol.includes(currentIndex) && !topRow.includes(currentIndex) && !visibleCells.includes(cellTopRight) && (emptyCells.includes(cellTopRight) || numCells.includes(cellTopRight))) {
+        let elem = document.getElementById(`cell${cellTopRight}`)
+        displayCell(elem)
+        visibleCells.push(cellTopRight)
+
+        if (emptyCells.includes(cellTopRight)) {
+            revealAdjEmpties(cellTopRight)
+        }
     }
 
-    if (leftCol.includes(currentIndex) === false && currentIndex <= 15 === false && (emptyCells.includes(cellTopLeft) || numCells.includes(cellTopLeft))) {
-        document.getElementById(`cell${cellTopLeft}`).click()
+    if (!leftCol.includes(currentIndex) && !topRow.includes(currentIndex) && !visibleCells.includes(cellTopLeft) && (emptyCells.includes(cellTopLeft) || numCells.includes(cellTopLeft))) {
+        let elem = document.getElementById(`cell${cellTopLeft}`)
+        displayCell(elem)
+        visibleCells.push(cellTopLeft)
+
+        if (emptyCells.includes(cellTopLeft)) {
+            revealAdjEmpties(cellTopLeft)
+        }
     }
     
-    if (rightCol.includes(currentIndex) === false && currentIndex >= 240 === false && (emptyCells.includes(cellBottomRight) || numCells.includes(cellBottomRight))) {
-        document.getElementById(`cell${cellBottomRight}`).click()
+    if (!rightCol.includes(currentIndex) && !bottomRow.includes(currentIndex) && !visibleCells.includes(cellBottomRight) && (emptyCells.includes(cellBottomRight) || numCells.includes(cellBottomRight))) {
+        let elem = document.getElementById(`cell${cellBottomRight}`)
+        displayCell(elem)
+        visibleCells.push(cellBottomRight)
+
+        if (emptyCells.includes(cellBottomRight)) {
+            revealAdjEmpties(cellBottomRight)
+        }
     }
 
-    if (leftCol.includes(currentIndex) === false && currentIndex >= 240 === false && (emptyCells.includes(cellBottomLeft) || numCells.includes(cellBottomLeft))) {
-        document.getElementById(`cell${cellBottomLeft}`).click()
+    if (!leftCol.includes(currentIndex) && !bottomRow.includes(currentIndex) && !visibleCells.includes(cellBottomLeft) && (emptyCells.includes(cellBottomLeft) || numCells.includes(cellBottomLeft))) {
+        let elem = document.getElementById(`cell${cellBottomLeft}`)
+        displayCell(elem)
+        visibleCells.push(cellBottomLeft)
+
+        if (emptyCells.includes(cellBottomLeft)) {
+            revealAdjEmpties(cellBottomLeft)
+        }
     }
 }
 
@@ -334,7 +380,7 @@ const modal = document.getElementById('win_lose_modal')
 const nonBombCells = numCells.length + emptyCells.length
 const modalContent = document.getElementById('modal_content')
 
-function winCheck () {
+const winCheck = () => {
     if (visibleCells.length === nonBombCells) {
         modal.style.display = "flex";
         modalContent.innerHTML = 
@@ -342,20 +388,23 @@ function winCheck () {
     }
 }
 
-function loseCheck (currentIndex) {
+const loseCheck = (elem, currentIndex) => {
     if (bombCells.includes(currentIndex)) {
         popSound.play()
 
         for (let i = 0; i < bombCells.length; i++) {
-            let bombDiv = document.getElementById(`cell${bombCells[i]}`)
+            let bombCell = bombCells[i]
+            let bombDiv = document.getElementById(`cell${bombCell}`)
 
-            if (bombDiv.classList.contains('flagged') === false) {
+            bombDiv.click()
+
+            if (!bombDiv.classList.contains('flagged')) {
                 bombDiv.classList.add('visible_cell')
                 bombDiv.classList.remove('evencell', 'oddcell')
             }
         }
 
-        modal.style.display = "flex";
+        modal.style.display = 'flex';
         modalContent.innerHTML = 
         '<p>You lose. :( Play again?</p><br /><img src="images/refreshbutton.png" alt="refresh button" class="refresh_button">'
     }
@@ -365,67 +414,34 @@ function loseCheck (currentIndex) {
 // every cell but I did not have time to figure it out
 
 let cellDiv = document.querySelectorAll('.cell')
+let gameBoard = document.querySelector('.minesweeper_grid')
 
 // Regular click:
 
-cellDiv.forEach(hiddenCell => {
-    hiddenCell.addEventListener('click', (e) => {
-        let cellID = e.currentTarget.id
+gameBoard.addEventListener('mousedown', e => {
+    const x = e.clientX
+    const y = e.clientY
+    let elem = document.elementFromPoint(x, y)
+    let currentIndex
 
-        if (e.target.innerHTML === '<img src="images/cup-cake.png" alt="cupcake" class="cupcake_img">') {
-            return
+    if (elem.classList.contains('cupcake_img') || elem.classList.contains('visible_cell')) {
+        return
+    } else if (elem.classList.contains('balloon')) {
+        elem = document.elementFromPoint(x, y).parentNode
+        currentIndex = parseInt(elem.id.slice(4))
+    } else if (elem.classList.contains('cell')) {
+        currentIndex = parseInt(elem.id.slice(4))
+        visibleCells.push(currentIndex)
+        displayCell(elem)
+
+        if (emptyCells.includes(currentIndex)) {
+            revealAdjEmpties(currentIndex)
         }
 
-        if (e.target.classList.contains('visible_cell')) {
-            return
-        }
-
-        visibleCells.push(cellID)
-
-        let currentIndex
-
-        if (cellID.length === 5) {
-            // Note this is a string without parseInt()
-            currentIndex = parseInt(cellID.slice(-1))
-
-            if (emptyCells.includes(currentIndex)) {
-                revealAdjEmpties(currentIndex)
-            }
-        } else if (cellID.length === 6) {
-            currentIndex = parseInt(cellID.slice(-2))
-            
-            if (emptyCells.includes(currentIndex)) {
-                revealAdjEmpties(currentIndex)
-            }
-        } else if (cellID.length === 7) {
-            currentIndex = parseInt(cellID.slice(-3))
-            
-            if (emptyCells.includes(currentIndex)) {
-                revealAdjEmpties(currentIndex)
-            }
-        }
-
-        // console.log(cellID)
-        // new win check:
         winCheck()
-        loseCheck(currentIndex)
+    }
 
-        if (bombCells.includes(currentIndex)) {
-            e.currentTarget.classList.remove('evencell', 'oddcell')
-            e.currentTarget.classList.add('visible_cell')
-
-            // looping over the array containing bombs
-            // need to change array name but currently no time
-            for (let i = 0; i < bombCells.length; i++) {
-                let bombCell = bombCells[i]
-                let bombDiv = document.querySelector(`div#cell${bombCell}`)
-                bombDiv.click()
-            }
-        } else {
-            e.target.classList.remove('evencell', 'oddcell')
-            e.target.classList.add('visible_cell')
-        }
-    })
+    loseCheck(elem, currentIndex)
 })
 
 // Right click flagging:
@@ -436,61 +452,83 @@ cellDiv.forEach(hiddenCell => {
 
 // It still works if clicking on the containing div.
 
-cellDiv.forEach(hiddenCell => {
-    hiddenCell.addEventListener('contextmenu', (e) => {
-        e.preventDefault()
+const addFlagListener = (e) => {
+    e.preventDefault()
 
-        if (e.target.classList.contains('visible_cell')) {
-            return
-        }
+    if (e.target.classList.contains('visible_cell')) {
+        return
+    }
+    
+    let cellID
+
+    if (e.target.classList.contains('cupcake_img')) {
+        cellID = e.target.parentNode.id
+    } else {
+        cellID = e.target.id
+    }
+
+    let currentIndex
+
+    if (cellID.length === 5) {
+        currentIndex = parseInt(cellID.slice(-1))
+    } else if (cellID.length === 6) {
+        currentIndex = parseInt(cellID.slice(-2))
+    } else if (cellID.length === 7) {
+        currentIndex = parseInt(cellID.slice(-3))
+    }
+
+    // If the div is already flagged and it is a bomb square
+    // remove flagged class from the div and generate new balloon in the DOM
+    if (e.currentTarget.classList.contains('flagged') && bombCells.includes(currentIndex)) {
+        // console.log('We are in the first condition')
+        e.target.classList.remove('flagged')
+
+        let randomBalloon = Math.floor(Math.random() * 6)
+        document.getElementById(`cell${currentIndex}`).innerHTML = `<img src="images/balloon${randomBalloon}.png" alt="balloon" class="balloon">`
+    // If the div is already flagged and it is a numbered square
+    // remove flagged class from the div and recalculate the numbers
+    // to re-add the number to the DOM 
+    } else if (e.currentTarget.classList.contains('flagged') && numCells.includes(currentIndex)) {
+        // console.log('We are in the second condition')
+        e.target.classList.remove('flagged')
         
-        let cellID
+        calculateNums()
+    // If the target is flagged and is not in 
+    // the bombs array or the numbers array, it was empty and
+    // needs to be reset to empty
+    } else if (e.currentTarget.classList.contains('flagged')) {
+        // console.log('We are in the third condition')
+        document.getElementById(`cell${currentIndex}`).innerHTML = ''
+        e.target.classList.remove('flagged')
+    // If the target was not flagged, add class flagged and
+    // set innerHTML to add cupcake to the DOM, replacing number or bomb
+    } else {
+        // console.log('We are in the last condition')
+        e.target.classList.add('flagged')
+        e.target.innerHTML = '<img src="images/cup-cake.png" alt="cupcake" class="cupcake_img">'
+    }
+}
 
-        if (e.target.classList.contains('cupcake_img')) {
-            cellID = e.target.parentNode.id
-        } else {
-            cellID = e.target.id
-        }
+const resetBoard = () => {
+    document.querySelectorAll('.col').forEach(e => e.remove())
 
-        let currentIndex
+    createColumns()
+    createCells()
 
-        if (cellID.length === 5) {
-            currentIndex = parseInt(cellID.slice(-1))
-        } else if (cellID.length === 6) {
-            currentIndex = parseInt(cellID.slice(-2))
-        } else if (cellID.length === 7) {
-            currentIndex = parseInt(cellID.slice(-3))
-        }
+    bombCells = []
+    numCells = []
+    emptyCells = []
+    visibleCells = []
 
-        // If the div is already flagged and it is a bomb square
-        // remove flagged class from the div and generate new balloon in the DOM
-        if (e.currentTarget.classList.contains('flagged') && bombCells.includes(currentIndex)) {
-            // console.log('We are in the first condition')
-            e.target.classList.remove('flagged')
+    createBombs()
+    createNums()
+    calculateNums()
+    findEmptyCells()
+}
 
-            let randomBalloon = Math.floor(Math.random() * 6)
-            document.getElementById(`cell${currentIndex}`).innerHTML = `<img src="images/balloon${randomBalloon}.png" alt="balloon" class="balloon">`
-        // If the div is already flagged and it is a numbered square
-        // remove flagged class from the div and recalculate the numbers
-        // to re-add the number to the DOM 
-        } else if (e.currentTarget.classList.contains('flagged') && numCells.includes(currentIndex)) {
-            // console.log('We are in the second condition')
-            e.target.classList.remove('flagged')
-            
-            calculateNums()
-        // If the target is flagged and is not in 
-        // the bombs array or the numbers array, it was empty and
-        // needs to be reset to empty
-        } else if (e.currentTarget.classList.contains('flagged')) {
-            // console.log('We are in the third condition')
-            document.getElementById(`cell${currentIndex}`).innerHTML = ''
-            e.target.classList.remove('flagged')
-        // If the target was not flagged, add class flagged and
-        // set innerHTML to add cupcake to the DOM, replacing number or bomb
-        } else {
-            // console.log('We are in the last condition')
-            e.target.classList.add('flagged')
-            e.target.innerHTML = '<img src="images/cup-cake.png" alt="cupcake" class="cupcake_img">'
-        }
-    })
+const refreshButton = document.querySelector('.refresh_button')
+
+refreshButton.addEventListener('click', () => {
+    resetBoard()
+    modal.style.display = 'none'
 })
