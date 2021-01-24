@@ -1,11 +1,8 @@
-// NOTE TO SELF: the numCells and/or emptyCells array is not
-// populating properly, since their lengths are not adding up to 216
-
 // generate the grid
 const gridContainer = document.querySelector('.minesweeper_grid')
 
-const boardWidth = 16
-const boardHeight = 16
+let boardWidth = 16
+let boardHeight = 16
 
 const createColumns = () => {
     for (let i = 0; i < boardWidth; i++) {
@@ -32,7 +29,7 @@ const createCells = () => {
             // multiply cell number by 16 then add column number to 
             // create cell ID so that the cells are calculated as +1 
             // to the right in every row
-            let cellID = (j * 16) + i
+            let cellID = (j * boardWidth) + i
 
             if (j % 2 === 0) {
                 div.classList.add('cell', 'evencell')
@@ -95,7 +92,7 @@ const leftCol = [
     128, 144, 160, 176, 192, 208, 224, 240
 ]
 
-function createNums () {
+const createNums = () => {
     for (let i = 0; i < 40; i++) {
         let bombCell = bombCells[i]
 
@@ -185,7 +182,7 @@ function createNums () {
 
 createNums()
 
-function calculateNums () {
+const calculateNums = () => {
     for (let i = 0; i < numCells.length; i++) {
         let numCell = numCells[i]
 
@@ -264,7 +261,7 @@ function calculateNums () {
 
 calculateNums()
 
-function findEmptyCells () {
+const findEmptyCells = () => {
     for (let i = 0; i < 256; i++) {
         if (!bombCells.includes(i) && !numCells.includes(i)) {
             emptyCells.push(i)
@@ -301,6 +298,11 @@ const revealAdjEmpties = (currentIndex) => {
 
         if (!outOfBounds && !visibleCells.includes(offsetIndex) && (emptyCells.includes(offsetIndex) || numCells.includes(offsetIndex))) {
             let elem = document.getElementById(`cell${offsetIndex}`)
+
+            if (elem.classList.contains('flagged')) {
+                removeFlag(currentIndex, elem)
+            }
+
             displayCell(elem)
             visibleCells.push(offsetIndex)
 
@@ -345,13 +347,25 @@ const loseCheck = (elem, currentIndex) => {
     }
 }
 
-// I know there is a better way to do this than adding an event listener
-// every cell but I did not have time to figure it out
+const cellDiv = document.querySelectorAll('.cell')
+const gameBoard = document.querySelector('.minesweeper_grid')
 
-let cellDiv = document.querySelectorAll('.cell')
-let gameBoard = document.querySelector('.minesweeper_grid')
+const removeFlag = (currentIndex, elem) => {
+    elem.classList.remove('flagged')
+            
+    if (bombCells.includes(currentIndex)) {
+        let randomBalloon = Math.floor(Math.random() * 6)
+        elem.innerHTML = `<img src="images/balloon${randomBalloon}.png" alt="balloon" class="balloon">`
+    }
 
-// Regular click:
+    if (numCells.includes(currentIndex)) {
+        calculateNums()
+    }
+
+    if (emptyCells.includes(currentIndex)) {
+        elem.innerHTML = ''
+    }
+}
 
 gameBoard.addEventListener('mousedown', e => {
     const x = e.clientX
@@ -359,12 +373,19 @@ gameBoard.addEventListener('mousedown', e => {
     let elem = document.elementFromPoint(x, y)
     let currentIndex
 
-    // This is the code that will run when the right-click functionality is restored, as the value 2 indicates that the secondary button has been clicked (usually the right button) and this will add/remove cupcake flags, so this needs to be refactored in the future.
     if (e.button === 2) {
+        if (e.target.classList.contains('visible_cell')) {
+            return
+        } else if (e.target.classList.contains('flagged')) {
+            removeFlag(currentIndex, elem)
+        } else {
+            e.target.classList.add('flagged')
+            e.target.innerHTML = '<img src="images/cup-cake.png" alt="cupcake" class="cupcake_img">'
+        }
         return
     }
 
-    if (elem.classList.contains('cupcake_img') || elem.classList.contains('visible_cell')) {
+    if (elem.classList.contains('flagged') || elem.classList.contains('visible_cell')) {
         return
     } else if (elem.classList.contains('balloon')) {
         elem = document.elementFromPoint(x, y).parentNode
@@ -387,71 +408,6 @@ gameBoard.addEventListener('mousedown', e => {
 gameBoard.addEventListener('contextmenu', e => {
     e.preventDefault()
 })
-
-// Right click flagging:
-
-// Note that this is currently buggy if clicking on a cupcake image, 
-// but I think I'll be able to debug it if I just add some checks to see 
-// if e.target.tagName = 'IMG' or not so I can target the parent if needed
-
-// It still works if clicking on the containing div.
-
-const addFlagListener = (e) => {
-    e.preventDefault()
-
-    if (e.target.classList.contains('visible_cell')) {
-        return
-    }
-    
-    let cellID
-
-    if (e.target.classList.contains('cupcake_img')) {
-        cellID = e.target.parentNode.id
-    } else {
-        cellID = e.target.id
-    }
-
-    let currentIndex
-
-    if (cellID.length === 5) {
-        currentIndex = parseInt(cellID.slice(-1))
-    } else if (cellID.length === 6) {
-        currentIndex = parseInt(cellID.slice(-2))
-    } else if (cellID.length === 7) {
-        currentIndex = parseInt(cellID.slice(-3))
-    }
-
-    // If the div is already flagged and it is a bomb square
-    // remove flagged class from the div and generate new balloon in the DOM
-    if (e.currentTarget.classList.contains('flagged') && bombCells.includes(currentIndex)) {
-        // console.log('We are in the first condition')
-        e.target.classList.remove('flagged')
-
-        let randomBalloon = Math.floor(Math.random() * 6)
-        document.getElementById(`cell${currentIndex}`).innerHTML = `<img src="images/balloon${randomBalloon}.png" alt="balloon" class="balloon">`
-    // If the div is already flagged and it is a numbered square
-    // remove flagged class from the div and recalculate the numbers
-    // to re-add the number to the DOM 
-    } else if (e.currentTarget.classList.contains('flagged') && numCells.includes(currentIndex)) {
-        // console.log('We are in the second condition')
-        e.target.classList.remove('flagged')
-        
-        calculateNums()
-    // If the target is flagged and is not in 
-    // the bombs array or the numbers array, it was empty and
-    // needs to be reset to empty
-    } else if (e.currentTarget.classList.contains('flagged')) {
-        // console.log('We are in the third condition')
-        document.getElementById(`cell${currentIndex}`).innerHTML = ''
-        e.target.classList.remove('flagged')
-    // If the target was not flagged, add class flagged and
-    // set innerHTML to add cupcake to the DOM, replacing number or bomb
-    } else {
-        // console.log('We are in the last condition')
-        e.target.classList.add('flagged')
-        e.target.innerHTML = '<img src="images/cup-cake.png" alt="cupcake" class="cupcake_img">'
-    }
-}
 
 const resetBoard = () => {
     document.querySelectorAll('.col').forEach(e => e.remove())
