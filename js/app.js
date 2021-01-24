@@ -4,11 +4,11 @@
 // generate the grid
 const gridContainer = document.querySelector('.minesweeper_grid')
 
-const totalCols = 16
-const totalRows = 16
+const boardWidth = 16
+const boardHeight = 16
 
 const createColumns = () => {
-    for (let i = 0; i < totalCols; i++) {
+    for (let i = 0; i < boardWidth; i++) {
         let div = document.createElement('div')
 
         if (i % 2 === 0) {
@@ -25,8 +25,8 @@ const createColumns = () => {
 createColumns()
 
 const createCells = () => {
-    for (let i = 0; i < totalCols; i++) {
-        for (let j = 0; j < totalRows; j++) {
+    for (let i = 0; i < boardWidth; i++) {
+        for (let j = 0; j < boardHeight; j++) {
             let div = document.createElement('div')
             let colDiv = document.querySelector(`#col${i}`)
             // multiply cell number by 16 then add column number to 
@@ -275,101 +275,38 @@ function findEmptyCells () {
 findEmptyCells()
 
 const displayCell = (elem) => {
-    console.log('displayCell is being called')
-    console.log(elem)
     elem.classList.remove('evencell', 'oddcell')
     elem.classList.add('visible_cell')
 }
 
+const getCoordinates = (currentIndex) => {
+    return [
+        currentIndex % boardWidth,
+        Math.floor(currentIndex / boardWidth)
+    ]
+}
+
+const getIndex = (x, y) => {
+    return (y * boardWidth) + x
+}
+
+const offsets = [[0, -1], [0, 1], [1, 0], [-1, 0], [1, -1], [-1, -1], [1, 1], [-1, 1]]
+
 const revealAdjEmpties = (currentIndex) => {
-    let cellAbove = currentIndex - 16
-    let cellBelow = currentIndex + 16
-    let cellRight = currentIndex + 1
-    let cellLeft = currentIndex - 1
-    let cellTopRight = currentIndex - 15
-    let cellTopLeft = currentIndex - 17
-    let cellBottomRight = currentIndex + 17
-    let cellBottomLeft = currentIndex + 15
+    let [x, y] = getCoordinates(currentIndex)
 
-    // If the cell is not in the top row and the above cell is either empty or numbered, display the above cell. Then, if the cell is empty, call this function again.
-    if (!topRow.includes(currentIndex) && !visibleCells.includes(cellAbove) && (emptyCells.includes(cellAbove) || numCells.includes(cellAbove))) {
-        let elem = document.getElementById(`cell${cellAbove}`)
-        displayCell(elem)
-        visibleCells.push(cellAbove)
+    for ([offsetX, offsetY] of offsets) {
+        offsetIndex = getIndex((x + offsetX), (y + offsetY))
+        let outOfBounds = ((x + offsetX) < 0 || (x + offsetX) >= boardWidth || (y + offsetY) < 0 || (y + offsetY) >= boardWidth)
 
-        if (emptyCells.includes(cellAbove)) {
-            revealAdjEmpties(cellAbove)
-        }
-    }
+        if (!outOfBounds && !visibleCells.includes(offsetIndex) && (emptyCells.includes(offsetIndex) || numCells.includes(offsetIndex))) {
+            let elem = document.getElementById(`cell${offsetIndex}`)
+            displayCell(elem)
+            visibleCells.push(offsetIndex)
 
-    if (!bottomRow.includes(currentIndex) && !visibleCells.includes(cellBelow) && (emptyCells.includes(cellBelow) || numCells.includes(cellBelow))) {
-        let elem = document.getElementById(`cell${cellBelow}`)
-        displayCell(elem)
-        visibleCells.push(cellBelow)
-
-        if (emptyCells.includes(cellBelow)) {
-            revealAdjEmpties(cellBelow)
-        }
-    }
-
-    if (!rightCol.includes(currentIndex) && !visibleCells.includes(cellRight) && (emptyCells.includes(cellRight) || numCells.includes(cellRight))) {
-        let elem = document.getElementById(`cell${cellRight}`)
-        displayCell(elem)
-        visibleCells.push(cellRight)
-
-        if (emptyCells.includes(cellRight)) {
-            revealAdjEmpties(cellRight)
-        }
-    }
-
-    if (!leftCol.includes(currentIndex) && !visibleCells.includes(cellLeft) && (emptyCells.includes(cellLeft) || numCells.includes(cellLeft))) {
-        let elem = document.getElementById(`cell${cellLeft}`)
-        displayCell(elem)
-        visibleCells.push(cellLeft)
-
-        if (emptyCells.includes(cellLeft)) {
-            revealAdjEmpties(cellLeft)
-        }
-    }
-    
-    // If the cell is not in the right column or top row, then we know there is a cell above and to the right of it. If that cell is either empty or numbered, then reveal it. If it's empty, call the function again.
-    if (!rightCol.includes(currentIndex) && !topRow.includes(currentIndex) && !visibleCells.includes(cellTopRight) && (emptyCells.includes(cellTopRight) || numCells.includes(cellTopRight))) {
-        let elem = document.getElementById(`cell${cellTopRight}`)
-        displayCell(elem)
-        visibleCells.push(cellTopRight)
-
-        if (emptyCells.includes(cellTopRight)) {
-            revealAdjEmpties(cellTopRight)
-        }
-    }
-
-    if (!leftCol.includes(currentIndex) && !topRow.includes(currentIndex) && !visibleCells.includes(cellTopLeft) && (emptyCells.includes(cellTopLeft) || numCells.includes(cellTopLeft))) {
-        let elem = document.getElementById(`cell${cellTopLeft}`)
-        displayCell(elem)
-        visibleCells.push(cellTopLeft)
-
-        if (emptyCells.includes(cellTopLeft)) {
-            revealAdjEmpties(cellTopLeft)
-        }
-    }
-    
-    if (!rightCol.includes(currentIndex) && !bottomRow.includes(currentIndex) && !visibleCells.includes(cellBottomRight) && (emptyCells.includes(cellBottomRight) || numCells.includes(cellBottomRight))) {
-        let elem = document.getElementById(`cell${cellBottomRight}`)
-        displayCell(elem)
-        visibleCells.push(cellBottomRight)
-
-        if (emptyCells.includes(cellBottomRight)) {
-            revealAdjEmpties(cellBottomRight)
-        }
-    }
-
-    if (!leftCol.includes(currentIndex) && !bottomRow.includes(currentIndex) && !visibleCells.includes(cellBottomLeft) && (emptyCells.includes(cellBottomLeft) || numCells.includes(cellBottomLeft))) {
-        let elem = document.getElementById(`cell${cellBottomLeft}`)
-        displayCell(elem)
-        visibleCells.push(cellBottomLeft)
-
-        if (emptyCells.includes(cellBottomLeft)) {
-            revealAdjEmpties(cellBottomLeft)
+            if (emptyCells.includes(offsetIndex)) {
+                revealAdjEmpties(offsetIndex)
+            }
         }
     }
 }
@@ -424,6 +361,11 @@ gameBoard.addEventListener('mousedown', e => {
     let elem = document.elementFromPoint(x, y)
     let currentIndex
 
+    // This is the code that will run when the right-click functionality is restored, as the value 2 indicates that the secondary button has been clicked (usually the right button) and this will add/remove cupcake flags, so this needs to be refactored in the future.
+    if (e.button === 2) {
+        return
+    }
+
     if (elem.classList.contains('cupcake_img') || elem.classList.contains('visible_cell')) {
         return
     } else if (elem.classList.contains('balloon')) {
@@ -442,6 +384,10 @@ gameBoard.addEventListener('mousedown', e => {
     }
 
     loseCheck(elem, currentIndex)
+})
+
+gameBoard.addEventListener('contextmenu', e => {
+    e.preventDefault()
 })
 
 // Right click flagging:

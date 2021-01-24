@@ -6,7 +6,7 @@
          url('../fonts/BabyWildyRegular.woff') format('woff'), /* Pretty Modern Browsers */
          url('../fonts/BabyWildyRegular.ttf')  format('truetype'), /* Safari, Android, iOS */
          url('../fonts/BabyWildyRegular.svg#BabyWildyRegular') format('svg'); /* Legacy iOS */
-  }
+}
 
 * {
     margin: 0;
@@ -36,7 +36,7 @@ div:hover {
 
 header {
     position: absolute;
-    top: 100px;
+    top: 150%;
 }
 
 h1 {
@@ -46,15 +46,21 @@ h1 {
     text-shadow: 2px 2px 4px black;
 }
 
-.birthday_edition_img {
-    width: 450px;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
 .confetti_img {
     height: 50px;
     width: 50px;
+}
+
+.birthday_edition_banner {
+    width: 100%;
+    max-width: 35%;
+    height: auto;
+    padding-top: 1%;
+}
+
+.balloon_counter {
+    display: flex;
+    align-items: center;
 }
 
 .counter_timer {
@@ -134,7 +140,9 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    font-size: 25px;
+    font-family: 'Patrick Hand', cursive;
+    font-weight: bold;
+    font-size: 2em;
     width: 640px;
 }
 
