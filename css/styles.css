@@ -135,20 +135,21 @@ h1 {
 }
 
 .above_grid {
+    width: 640px;
     top: 235px;
     position: absolute;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     font-family: 'Patrick Hand', cursive;
-    font-weight: bold;
     font-size: 2em;
-    width: 640px;
+    text-shadow: 1px 1px 1px black;
 }
 
 .refresh_button {
     height: 40px;
     width: 40px;
+    margin: auto;
 }
 
 .cupcake_img {
@@ -170,6 +171,8 @@ h1 {
 }
   
 #modal_content {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.5em;
     background-color: #f3d1dc;
     border-radius: 5px;
     margin: auto;

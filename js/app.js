@@ -320,8 +320,7 @@ const modalContent = document.getElementById('modal_content')
 const winCheck = () => {
     if (visibleCells.length === nonBombCells) {
         modal.style.display = "flex";
-        modalContent.innerHTML = 
-        '<p>You win! Play again?</p><br /><img src="images/refreshbutton.png" alt="refresh button" class="refresh_button">'
+        document.querySelector('.win_lose_msg').innerText = 'You win! Play again?'
     }
 }
 
@@ -342,8 +341,7 @@ const loseCheck = (elem, currentIndex) => {
         }
 
         modal.style.display = 'flex';
-        modalContent.innerHTML = 
-        '<p>You lose. :( Play again?</p><br /><img src="images/refreshbutton.png" alt="refresh button" class="refresh_button">'
+        document.querySelector('.win_lose_msg').innerText = 'You lose. :( Play again?'
     }
 }
 
@@ -472,9 +470,11 @@ const resetBoard = () => {
     findEmptyCells()
 }
 
-const refreshButton = document.querySelector('.refresh_button')
+const refreshButtons = document.querySelectorAll('.refresh_button')
 
-refreshButton.addEventListener('click', () => {
-    resetBoard()
-    modal.style.display = 'none'
+refreshButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        resetBoard()
+        modal.style.display = 'none'
+    })
 })
