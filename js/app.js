@@ -3,6 +3,8 @@ const gridContainer = document.querySelector('.minesweeper_grid')
 
 let boardWidth = 16
 let boardHeight = 16
+let totalBombs = 40
+const offsets = [[0, -1], [0, 1], [1, 0], [-1, 0], [1, -1], [-1, -1], [1, 1], [-1, 1]]
 
 const createColumns = () => {
     for (let i = 0; i < boardWidth; i++) {
@@ -58,8 +60,7 @@ const placeBomb = (randomCell) => {
 const createBombs = () => {
     let count = 0
 
-    while (count < 40) {
-        // returns a random number from 0 to 255
+    while (count < totalBombs) {
         let randomCell = Math.floor(Math.random() * 256)
 
         if (!bombCells.includes(randomCell)) {
@@ -92,89 +93,32 @@ const leftCol = [
     128, 144, 160, 176, 192, 208, 224, 240
 ]
 
+const getOutOfBounds = (x, offsetX, y, offsetY) => {
+    return ((x + offsetX) < 0 || (x + offsetX) >= boardWidth || (y + offsetY) < 0 || (y + offsetY) >= boardHeight)
+}
+
+const getCoordinates = (currentIndex) => {
+    return [
+        currentIndex % boardWidth,
+        Math.floor(currentIndex / boardWidth)
+    ]
+}
+
+const getIndex = (x, y) => {
+    return (y * boardWidth) + x
+}
+
 const createNums = () => {
-    for (let i = 0; i < 40; i++) {
-        let bombCell = bombCells[i]
+    for (let i = 0; i < totalBombs; i++) {
+        let [bombX, bombY] = getCoordinates(bombCells[i])
+        
+        for ([offsetX, offsetY] of offsets) {
+            let outOfBounds = getOutOfBounds(bombX, offsetX, bombY, offsetY)
+            let currentIndex = getIndex((bombX + offsetX), (bombY + offsetY))
 
-        let cellAbove = bombCell - 16
-        let cellBelow = bombCell + 16
-        let cellRight = bombCell + 1
-        let cellLeft = bombCell - 1
-        let cellTopRight = bombCell - 15
-        let cellTopLeft = bombCell - 17
-        let cellBottomRight = bombCell + 17
-        let cellBottomLeft = bombCell + 15
-
-        // If the index of the cell is less than or equal to 15, it's in the
-        // top row, so we don't want to check the cell above it.
-        if (bombCell <= 15 === false) {
-            // If there is no bomb and no number in the cell, add 'n' for number
-            if (bombCells.includes(cellAbove) === false && numCells.includes(cellAbove) === false) {
-                numCells.push(cellAbove)
-                document.getElementById(`cell${cellAbove}`).innerHTML = 'n'
-            }
-        }
-
-        // If the index of the cell is greater than or equal to 240, it's in the
-        // bottom row, so we don't want to check the cell below it.
-        if (bombCell >= 240 === false) {
-            if (bombCells.includes(cellBelow) === false && numCells.includes(cellBelow) === false) {
-                numCells.push(cellBelow)
-                document.getElementById(`cell${cellBelow}`).innerHTML = 'n'
-            }
-        }
-
-        // If the index of the cell is in the right column, don't check the
-        // cell to the right.
-        if (rightCol.includes(bombCell) === false) {
-            if (bombCells.includes(cellRight) === false && numCells.includes(cellRight) === false) {
-                numCells.push(cellRight)
-                document.getElementById(`cell${cellRight}`).innerHTML = 'n'
-            }
-        }
-
-        // If the index of the cell is in the left column, don't check the
-        // cell to the left. 
-        if (leftCol.includes(bombCell) === false) {
-            if (bombCells.includes(cellLeft) === false && numCells.includes(cellLeft) === false) {
-                numCells.push(cellLeft)
-                document.getElementById(`cell${cellLeft}`).innerHTML = 'n'
-            }
-        }
-
-        // If the index of the cell is NOT in the right column and NOT
-        // in the top row, then we want to check the cell above and to the right.
-        if (rightCol.includes(bombCell) === false && bombCell <= 15 === false) {
-            if (bombCells.includes(cellTopRight) === false && numCells.includes(cellTopRight) === false) {
-                numCells.push(cellTopRight)
-                document.getElementById(`cell${cellTopRight}`).innerHTML = 'n'
-            }
-        }
-
-        // If the index of the cell is NOT in the left column and NOT
-        // in the top row, then we want to check the cell above and to the left.
-        if (leftCol.includes(bombCell) === false && bombCell <= 15 === false) {
-            if (bombCells.includes(cellTopLeft) === false && numCells.includes(cellTopLeft) === false) {
-                numCells.push(cellTopLeft)
-                document.getElementById(`cell${cellTopLeft}`).innerHTML = 'n'
-            }
-        }
-
-        // If the index of the cell is NOT in the right column and NOT
-        // in the bottom row, then we want to check the cell below and to the right.
-        if (rightCol.includes(bombCell) === false && bombCell >= 240 === false) {
-            if (bombCells.includes(cellBottomRight) === false && numCells.includes(cellBottomRight) === false) {
-                numCells.push(cellBottomRight)
-                document.getElementById(`cell${cellBottomRight}`).innerHTML = 'n'
-            }
-        }
-
-        // If the index of the cell is NOT in the left column and NOT
-        // in the bottom row, then we want to check the cell below and to the left.
-        if (leftCol.includes(bombCell) === false && bombCell >= 240 === false) {
-            if (bombCells.includes(cellBottomLeft) === false && numCells.includes(cellBottomLeft) === false) {
-                numCells.push(cellBottomLeft)
-                document.getElementById(`cell${cellBottomLeft}`).innerHTML = 'n'
+            if (!outOfBounds && !bombCells.includes(currentIndex) && !numCells.includes(currentIndex)) {
+                numCells.push(currentIndex)
+                document.getElementById(`cell${currentIndex}`).innerHTML = 'n'
             }
         }
     }
@@ -276,25 +220,12 @@ const displayCell = (elem) => {
     elem.classList.add('visible_cell')
 }
 
-const getCoordinates = (currentIndex) => {
-    return [
-        currentIndex % boardWidth,
-        Math.floor(currentIndex / boardWidth)
-    ]
-}
-
-const getIndex = (x, y) => {
-    return (y * boardWidth) + x
-}
-
-const offsets = [[0, -1], [0, 1], [1, 0], [-1, 0], [1, -1], [-1, -1], [1, 1], [-1, 1]]
-
 const revealAdjEmpties = (currentIndex) => {
     let [x, y] = getCoordinates(currentIndex)
 
     for ([offsetX, offsetY] of offsets) {
         offsetIndex = getIndex((x + offsetX), (y + offsetY))
-        let outOfBounds = ((x + offsetX) < 0 || (x + offsetX) >= boardWidth || (y + offsetY) < 0 || (y + offsetY) >= boardWidth)
+        let outOfBounds = getOutOfBounds(x, offsetX, y, offsetY)
 
         if (!outOfBounds && !visibleCells.includes(offsetIndex) && (emptyCells.includes(offsetIndex) || numCells.includes(offsetIndex))) {
             let elem = document.getElementById(`cell${offsetIndex}`)
