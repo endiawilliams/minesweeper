@@ -1,10 +1,57 @@
-// generate the grid
-const gridContainer = document.querySelector('.minesweeper_grid')
-
 let boardWidth = 16
 let boardHeight = 16
 let totalBombs = 40
+
+let bombCells = []
+let numCells = []
+let emptyCells = []
+let visibleCells = []
+
 const offsets = [[0, -1], [0, 1], [1, 0], [-1, 0], [1, -1], [-1, -1], [1, 1], [-1, 1]]
+
+const getOutOfBounds = (x, offsetX, y, offsetY) => {
+    return ((x + offsetX) < 0 || (x + offsetX) >= boardWidth || (y + offsetY) < 0 || (y + offsetY) >= boardHeight)
+}
+
+const getCoordinates = (currentIndex) => {
+    return [
+        currentIndex % boardWidth,
+        Math.floor(currentIndex / boardWidth)
+    ]
+}
+
+const getIndex = (x, y) => {
+    return (y * boardWidth) + x
+}
+
+const displayCell = (elem) => {
+    elem.classList.remove('evencell', 'oddcell')
+    elem.classList.add('visible_cell')
+}
+
+const createNum = (currentIndex) => {
+    let [numX, numY] = getCoordinates(currentIndex)
+    let adjacentBombCount = 0
+
+    for ([offsetX, offsetY] of offsets) {
+        let outOfBounds = getOutOfBounds(numX, offsetX, numY, offsetY)
+        let currentIndex = getIndex((numX + offsetX), (numY + offsetY))
+
+        if (!outOfBounds && bombCells.includes(currentIndex)) {
+            adjacentBombCount += 1
+        }
+    }
+
+    document.getElementById(`cell${currentIndex}`).innerHTML = adjacentBombCount
+}
+
+const gameBoard = document.querySelector('.minesweeper_grid')
+const popSound = document.getElementById('pop_sound')
+const balloon = document.querySelector('.balloon')
+const cupcake = document.querySelector('.cupcake_img')
+const modal = document.getElementById('win_lose_modal')
+const modalContent = document.getElementById('modal_content')
+const nonBombCells = numCells.length + emptyCells.length
 
 const createColumns = () => {
     for (let i = 0; i < boardWidth; i++) {
@@ -17,7 +64,7 @@ const createColumns = () => {
         }
 
         div.setAttribute('id', `col${i}`)
-        gridContainer.appendChild(div)
+        gameBoard.appendChild(div)
     }
 }
 
@@ -47,11 +94,6 @@ const createCells = () => {
 
 createCells()
 
-let bombCells = []
-let numCells = []
-let emptyCells = []
-let visibleCells = []
-
 const placeBomb = (randomCell) => {
     let randomBomb = Math.floor(Math.random() * 6)
     document.getElementById(`cell${randomCell}`).innerHTML = `<img src="images/balloon${randomBomb}.png" alt="balloon" class="balloon">`
@@ -73,42 +115,7 @@ const createBombs = () => {
 
 createBombs()
 
-const topRow = [
-    0, 1, 2, 3, 4, 5, 6, 7, 
-    8, 9, 10, 11, 12, 13, 14, 15
-]
-
-const bottomRow = [
-    240, 241, 242, 243, 244, 245, 246, 247,
-    248, 249, 250, 251, 252, 253, 254, 255
-]
-
-const rightCol = [
-    15, 31, 47, 63, 79, 95, 111, 127, 
-    143, 159, 175, 191, 207, 223, 239, 255
-]
-
-const leftCol = [
-    0, 16, 32, 48, 64, 80, 96, 112, 
-    128, 144, 160, 176, 192, 208, 224, 240
-]
-
-const getOutOfBounds = (x, offsetX, y, offsetY) => {
-    return ((x + offsetX) < 0 || (x + offsetX) >= boardWidth || (y + offsetY) < 0 || (y + offsetY) >= boardHeight)
-}
-
-const getCoordinates = (currentIndex) => {
-    return [
-        currentIndex % boardWidth,
-        Math.floor(currentIndex / boardWidth)
-    ]
-}
-
-const getIndex = (x, y) => {
-    return (y * boardWidth) + x
-}
-
-const createNums = () => {
+const findNums = () => {
     for (let i = 0; i < totalBombs; i++) {
         let [bombX, bombY] = getCoordinates(bombCells[i])
         
@@ -118,92 +125,20 @@ const createNums = () => {
 
             if (!outOfBounds && !bombCells.includes(currentIndex) && !numCells.includes(currentIndex)) {
                 numCells.push(currentIndex)
-                document.getElementById(`cell${currentIndex}`).innerHTML = 'n'
             }
         }
     }
 }
 
-createNums()
+findNums()
 
-const calculateNums = () => {
+const calculateAllNums = () => {
     for (let i = 0; i < numCells.length; i++) {
-        let numCell = numCells[i]
-
-        let adjacentBombCount = 0
-
-        let cellAbove = numCell - 16
-        let cellBelow = numCell + 16
-        let cellRight = numCell + 1
-        let cellLeft = numCell - 1
-        let cellTopRight = numCell - 15
-        let cellTopLeft = numCell - 17
-        let cellBottomRight = numCell + 17
-        let cellBottomLeft = numCell + 15
-
-        if (numCell <= 15 === false) {
-            // Check if there is a bomb in the cell above by checking to see
-            // if the index number exists in the bombCells array
-            if (bombCells.includes(cellAbove)) {
-                adjacentBombCount += 1
-            }
-        }
-
-        if (numCell >= 240 === false) {
-            if (bombCells.includes(cellBelow)) {
-                adjacentBombCount += 1
-            }
-        }
-
-        // If the numbered cell is in the right column, we do not want to 
-        // check a cell to the right (which does not exist). Therefore, we
-        // only want to run this code if rightCol does not include the index
-        // number of the numbered cell we are checking. 
-        if (rightCol.includes(numCell) === false) {
-            // If the bombCells array includes the cell to the right of the 
-            // numbered cell, then run the code
-            if (bombCells.includes(cellRight)) {
-                adjacentBombCount += 1
-            }
-        }
-
-        if (leftCol.includes(numCell) === false) {
-            if (bombCells.includes(cellLeft)) {
-                adjacentBombCount += 1
-            }
-        }
-
-        // If the index of the cell is NOT in the right column and NOT
-        // in the top row, then we want to check the cell above and to the right.
-        if (rightCol.includes(numCell) === false && numCell <= 15 === false) {
-            if (bombCells.includes(cellTopRight)) {
-                adjacentBombCount += 1
-            }
-        }
-
-        if (leftCol.includes(numCell) === false && numCell <= 15 === false) {
-            if (bombCells.includes(cellTopLeft)) {
-                adjacentBombCount += 1
-            }
-        }
-
-        if (rightCol.includes(numCell) === false && numCell >= 240 === false) {
-            if (bombCells.includes(cellBottomRight)) {
-                adjacentBombCount += 1
-            }
-        }
-
-        if (leftCol.includes(numCell) === false && numCell >= 240 === false) {
-            if (bombCells.includes(cellBottomLeft)) {
-                adjacentBombCount += 1
-            }
-        }
-
-        document.getElementById(`cell${numCell}`).innerHTML = adjacentBombCount
+        createNum(numCells[i])
     }
 }
 
-calculateNums()
+calculateAllNums()
 
 const findEmptyCells = () => {
     for (let i = 0; i < 256; i++) {
@@ -214,11 +149,6 @@ const findEmptyCells = () => {
 }
 
 findEmptyCells()
-
-const displayCell = (elem) => {
-    elem.classList.remove('evencell', 'oddcell')
-    elem.classList.add('visible_cell')
-}
 
 const revealAdjEmpties = (currentIndex) => {
     let [x, y] = getCoordinates(currentIndex)
@@ -243,12 +173,6 @@ const revealAdjEmpties = (currentIndex) => {
         }
     }
 }
-
-const popSound = document.getElementById('pop_sound')
-const balloon = document.querySelector('.balloon')
-const modal = document.getElementById('win_lose_modal')
-const nonBombCells = numCells.length + emptyCells.length
-const modalContent = document.getElementById('modal_content')
 
 const winCheck = () => {
     if (visibleCells.length === nonBombCells) {
@@ -278,62 +202,91 @@ const loseCheck = (elem, currentIndex) => {
     }
 }
 
-const cellDiv = document.querySelectorAll('.cell')
-const gameBoard = document.querySelector('.minesweeper_grid')
-
 const removeFlag = (currentIndex, elem) => {
     elem.classList.remove('flagged')
-            
+    
+    while (elem.hasChildNodes()) {
+        elem.removeChild(elem.lastChild)
+    }
+
     if (bombCells.includes(currentIndex)) {
-        let randomBalloon = Math.floor(Math.random() * 6)
-        elem.innerHTML = `<img src="images/balloon${randomBalloon}.png" alt="balloon" class="balloon">`
+        let randomColor = Math.floor(Math.random() * 6)
+        let newImg = document.createElement('img')
+        let newBalloon = elem.appendChild(newImg)
+        newBalloon.setAttribute('src', `images/balloon${randomColor}.png`)
+        newBalloon.setAttribute('class', 'balloon')
+        newBalloon.setAttribute('alt', 'balloon')
+    } else if (numCells.includes(currentIndex)) {
+        createNum(currentIndex)
+    } else {
+        return
+    }
+}
+
+const addFlag = (elem) => {
+    elem.classList.add('flagged')
+    
+    while (elem.hasChildNodes()) {
+        elem.removeChild(elem.lastChild)
     }
 
-    if (numCells.includes(currentIndex)) {
-        calculateNums()
-    }
+    let newImg = document.createElement('img')
+    let flag = elem.appendChild(newImg)
 
-    if (emptyCells.includes(currentIndex)) {
-        elem.innerHTML = ''
-    }
+    flag.setAttribute('src', 'images/cup-cake.png')
+    flag.setAttribute('alt', 'cupcake')
+    flag.setAttribute('class', 'cupcake_img')
 }
 
 gameBoard.addEventListener('mousedown', e => {
     const x = e.clientX
     const y = e.clientY
+    
     let elem = document.elementFromPoint(x, y)
-    let currentIndex
+    let parentDiv = elem.parentElement
+    let targetCell
 
+    // Auxiliary/right click
     if (e.button === 2) {
-        if (e.target.classList.contains('visible_cell')) {
-            return
-        } else if (e.target.classList.contains('flagged')) {
-            removeFlag(currentIndex, elem)
+        if (elem.classList.contains('cell')) {
+            targetCell = elem
+        } else if (parentDiv.classList.contains('cell')) {
+            targetCell = parentDiv
         } else {
-            e.target.classList.add('flagged')
-            e.target.innerHTML = '<img src="images/cup-cake.png" alt="cupcake" class="cupcake_img">'
+            return
         }
+    
+        let currentIndex = parseInt(targetCell.id.slice(4))
+        let isFlagged = targetCell.classList.contains('flagged')
+        let isVisible = targetCell.classList.contains('visible_cell')
+    
+        if (isVisible) {
+            return
+        } else if (isFlagged) {
+            removeFlag(currentIndex, targetCell)
+        } else {
+            addFlag(targetCell)
+        }
+    // Primary/left click
+    } else if (e.button === 1) {
+        if (isFlagged || isVisible) {
+            return
+        } else {
+            displayCell(elem)
+
+            if (bombCells.contains(currentIndex)) {
+                loseCheck(elem, currentIndex)
+                return
+            } else {
+                if (emptyCells.contains(currentIndex)) {
+                    revealAdjEmpties(currentIndex)
+                }
+                winCheck()
+            }
+        }
+    } else {
         return
     }
-
-    if (elem.classList.contains('flagged') || elem.classList.contains('visible_cell')) {
-        return
-    } else if (elem.classList.contains('balloon')) {
-        elem = document.elementFromPoint(x, y).parentNode
-        currentIndex = parseInt(elem.id.slice(4))
-    } else if (elem.classList.contains('cell')) {
-        currentIndex = parseInt(elem.id.slice(4))
-        visibleCells.push(currentIndex)
-        displayCell(elem)
-
-        if (emptyCells.includes(currentIndex)) {
-            revealAdjEmpties(currentIndex)
-        }
-
-        winCheck()
-    }
-
-    loseCheck(elem, currentIndex)
 })
 
 gameBoard.addEventListener('contextmenu', e => {
@@ -352,8 +305,8 @@ const resetBoard = () => {
     visibleCells = []
 
     createBombs()
-    createNums()
-    calculateNums()
+    findNums()
+    calculateAllNums()
     findEmptyCells()
 }
 
