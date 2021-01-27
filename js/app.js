@@ -51,7 +51,6 @@ const balloon = document.querySelector('.balloon')
 const cupcake = document.querySelector('.cupcake_img')
 const modal = document.getElementById('win_lose_modal')
 const modalContent = document.getElementById('modal_content')
-const nonBombCells = numCells.length + emptyCells.length
 
 const createColumns = () => {
     for (let i = 0; i < boardWidth; i++) {
@@ -150,6 +149,8 @@ const findEmptyCells = () => {
 
 findEmptyCells()
 
+const nonBombCells = numCells.length + emptyCells.length
+
 const revealAdjEmpties = (currentIndex) => {
     let [x, y] = getCoordinates(currentIndex)
 
@@ -172,6 +173,8 @@ const revealAdjEmpties = (currentIndex) => {
             }
         }
     }
+
+    winCheck()
 }
 
 const winCheck = () => {
@@ -246,20 +249,20 @@ gameBoard.addEventListener('mousedown', e => {
     let parentDiv = elem.parentElement
     let targetCell
 
+    if (elem.classList.contains('cell')) {
+        targetCell = elem
+    } else if (parentDiv.classList.contains('cell')) {
+        targetCell = parentDiv
+    } else {
+        return
+    }
+
+    let currentIndex = parseInt(targetCell.id.slice(4))
+    let isFlagged = targetCell.classList.contains('flagged')
+    let isVisible = targetCell.classList.contains('visible_cell')
+
     // Auxiliary/right click
     if (e.button === 2) {
-        if (elem.classList.contains('cell')) {
-            targetCell = elem
-        } else if (parentDiv.classList.contains('cell')) {
-            targetCell = parentDiv
-        } else {
-            return
-        }
-    
-        let currentIndex = parseInt(targetCell.id.slice(4))
-        let isFlagged = targetCell.classList.contains('flagged')
-        let isVisible = targetCell.classList.contains('visible_cell')
-    
         if (isVisible) {
             return
         } else if (isFlagged) {
@@ -268,18 +271,20 @@ gameBoard.addEventListener('mousedown', e => {
             addFlag(targetCell)
         }
     // Primary/left click
-    } else if (e.button === 1) {
+    } else if (e.button === 0) {
         if (isFlagged || isVisible) {
             return
         } else {
             displayCell(elem)
+            visibleCells.push(currentIndex)
 
-            if (bombCells.contains(currentIndex)) {
+            if (bombCells.includes(currentIndex)) {
                 loseCheck(elem, currentIndex)
                 return
             } else {
-                if (emptyCells.contains(currentIndex)) {
+                if (emptyCells.includes(currentIndex)) {
                     revealAdjEmpties(currentIndex)
+                    return
                 }
                 winCheck()
             }
