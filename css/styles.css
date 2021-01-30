@@ -36,7 +36,8 @@ div:hover {
 
 header {
     position: absolute;
-    top: 150%;
+    top: 110%;
+    display: inline-block;
 }
 
 h1 {
@@ -52,10 +53,19 @@ h1 {
 }
 
 .birthday_edition_banner {
-    width: 100%;
-    max-width: 35%;
-    height: auto;
     padding-top: 1%;
+}
+
+/* 605 px wide */
+.birthday {
+    width: 25%;
+    height: 25%;
+}
+
+/* 531 px wide, 87.8% the width */
+.edition {
+    width: 22%;
+    height: 22%;
 }
 
 .balloon_counter {
