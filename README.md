@@ -15,15 +15,15 @@ When thinking about a browser game I could build with JavaScript, I was instantl
 ## User Stories & Wireframes
 
 - When the user clicks on a square, the square will display either a number, an empty square, or a balloon.
-- If the user clicks on a balloon, then then they lose the game.
+- If the user clicks on a balloon, then then they lose the game, and a modal displays with a lose message and a restart button.
 - If the user clicks on an empty square, then all adjacent empty squares will be displayed, and all numbered squares adjacent to those will be displayed as well. 
 - If the user clicks on a number, then only that number will be displayed and they must pick another square. 
 - The numbered squares contain an integer representing the number of bombs in adjacent squares, which give hints about where the bombs are placed. 
-- If the user can accurately deduce the location of a balloon, they can "flag" that square by right-clicking on it, which makes a cupcake icon appear on the square. That square cannot be revealed unless the user right-clicks again to remove the cupcake. This is a purely optional functionality that the player can use to protect squares that they know have a balloon in them and to accurately visualize where balloons are placed. 
-- If the user reveals all empty and numbered squares without popping a balloon, they win the game.
+- If the user can accurately deduce the location of a balloon, they can "flag" that square with a cupcake by right-clicking on it. That square cannot be revealed unless the user right-clicks again to remove the cupcake. This is a purely optional functionality that the player can use to protect squares that they know have a balloon in them and to accurately visualize where balloons are placed. 
+- If the user reveals all empty and numbered squares without popping a balloon, they win the game, and a modal displays with a win message and a restart button.
 - The stopwatch in the upper right corner helps a user keep track of how long it takes them to win a game so that they can try to beat their best time. 
 - The number in the upper left corner indicates how many balloons are on the board. 
-- The user can reset the board by clicking the green refresh button.
+- The user can reset the board by clicking the restart button above the board, or inside the modal if they win or lose.
 
 ![Wireframe](https://i.imgur.com/WHX3F98.png)
 
@@ -34,15 +34,9 @@ Technologies used in this project were:
 - FlexBox
 - JavaScript
 
-![Mutual Recursion: Click Event](https://i.imgur.com/WMhSQ94.png)
+![Recursion](https://i.imgur.com/4ZjFOEe.png)
 
-![Mutual Recursion: revealAdjEmpties()](https://i.imgur.com/T7r10lb.png)
-
-## Credits
-
-![StackOverflow: Simulate a click](https://stackoverflow.com/questions/2705583/how-to-simulate-a-click-with-javascript)
-
-This was really instrumental to me in implementing recursion in my program to make all adjacent empty squares appear when clicking an empty square.
+![Out of Bounds Check](https://i.imgur.com/YyUA26l.png)
 
 ## Future Development
 
