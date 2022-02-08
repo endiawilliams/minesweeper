@@ -184,7 +184,7 @@ const winCheck = () => {
     }
 }
 
-const loseCheck = (elem, currentIndex) => {
+const loseCheck = (currentIndex) => {
     if (bombCells.includes(currentIndex)) {
         popSound.play()
 
@@ -279,7 +279,7 @@ gameBoard.addEventListener('mousedown', e => {
             visibleCells.push(currentIndex)
 
             if (bombCells.includes(currentIndex)) {
-                loseCheck(elem, currentIndex)
+                loseCheck(currentIndex)
                 return
             } else {
                 if (emptyCells.includes(currentIndex)) {
