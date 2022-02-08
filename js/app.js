@@ -1,3 +1,18 @@
+let gameStarted = false
+
+const timer = document.getElementById('timer')
+
+const createTimer = () => {
+    timer.innerText = '00:00'
+}
+
+createTimer()
+
+let minutes = 0
+let seconds = 0
+
+let gameLength
+
 let boardWidth = 16
 let boardHeight = 16
 let totalBombs = 40
@@ -186,6 +201,7 @@ const winCheck = () => {
 
 const loseCheck = (currentIndex) => {
     if (bombCells.includes(currentIndex)) {
+        clearInterval(gameLength)
         popSound.play()
 
         for (let i = 0; i < bombCells.length; i++) {
@@ -242,6 +258,20 @@ const addFlag = (elem) => {
 }
 
 gameBoard.addEventListener('mousedown', e => {
+    if (!gameStarted) {
+        gameLength = setInterval(() => {
+            if (seconds < 59) {
+                seconds++
+            } else {
+                seconds = 0
+                minutes++
+            }
+
+            timer.innerText = `${minutes.toLocaleString('en-US', {minimumIntegerDigits: 2})}:${seconds.toLocaleString('en-US', {minimumIntegerDigits: 2})}`
+        }, 1000)
+        gameStarted = true
+    }
+
     const x = e.clientX
     const y = e.clientY
     
@@ -299,6 +329,14 @@ gameBoard.addEventListener('contextmenu', e => {
 })
 
 const resetBoard = () => {
+    gameStarted = false
+
+    clearInterval(gameLength)
+    createTimer()
+
+    seconds = 0
+    minutes = 0
+
     document.querySelectorAll('.col').forEach(e => e.remove())
 
     createColumns()
@@ -320,6 +358,7 @@ const refreshButtons = document.querySelectorAll('.refresh_button')
 refreshButtons.forEach(button => {
     button.addEventListener('click', () => {
         resetBoard()
+        clearInterval(gameLength)
         modal.style.display = 'none'
     })
 })
