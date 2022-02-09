@@ -114,7 +114,7 @@ h1 {
 }
 
 /* hidden cells */
-.oddcell, .evencell {
+.hidden_cell {
     background-color: #ff8dce;
     border: 1px solid #ff8dce;
     border-radius: 10%;
@@ -122,7 +122,7 @@ h1 {
 }
 
 /* hidden cells with balloons */
-.oddcell > img.balloon, .evencell > img.balloon {
+.hidden_cell > img.balloon {
     opacity: 0;
 }
 

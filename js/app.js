@@ -40,7 +40,7 @@ const getIndex = (x, y) => {
 }
 
 const displayCell = (elem) => {
-    elem.classList.remove('evencell', 'oddcell')
+    elem.classList.remove('hidden_cell')
     elem.classList.add('visible_cell')
 }
 
@@ -71,11 +71,7 @@ const createColumns = () => {
     for (let i = 0; i < boardWidth; i++) {
         let div = document.createElement('div')
 
-        if (i % 2 === 0) {
-            div.classList.add('col', 'evencol')
-        } else {
-            div.classList.add('col', 'oddcol')
-        }
+        div.classList.add('col')
 
         div.setAttribute('id', `col${i}`)
         gameBoard.appendChild(div)
@@ -94,11 +90,7 @@ const createCells = () => {
             // to the right in every row
             let cellID = (j * boardWidth) + i
 
-            if (j % 2 === 0) {
-                div.classList.add('cell', 'evencell')
-            } else {
-                div.classList.add('cell', 'oddcell')
-            }
+            div.classList.add('cell', 'hidden_cell')
 
             colDiv.appendChild(div)
             div.setAttribute('id', `cell${cellID}`)
@@ -213,7 +205,7 @@ const loseCheck = (currentIndex) => {
 
             if (!bombDiv.classList.contains('flagged')) {
                 bombDiv.classList.add('visible_cell')
-                bombDiv.classList.remove('evencell', 'oddcell')
+                bombDiv.classList.remove('hidden_cell')
             }
         }
 
