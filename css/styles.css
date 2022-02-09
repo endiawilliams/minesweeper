@@ -106,17 +106,19 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 28px;
-    width: 28px;
+    height: 25px;
+    width: 25px;
+    margin: 4px 2px;
     padding: 5px;
     font-weight: bold;
     font-size: 20px;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.4);
 }
 
 /* hidden cells */
 .hidden_cell {
-    background-color: #ff8dce;
-    border: 1px solid #ff8dce;
+    background-color: rgb(255, 141, 206);
+    border: 1px solid rgb(255, 141, 206);
     border-radius: 10%;
     color: rgba(255, 255, 255, 0)
 }
@@ -128,8 +130,9 @@ h1 {
 
 /* visible cells */
 .visible_cell {
-    /* background-color: #faf0a5; */
+    background-color: rgb(255, 198, 231);
     border: 1px solid rgba(255,255,255,0);
+    border-radius: 10%;
     color: white;
     text-shadow: 0px 0px 2px black;
 }
