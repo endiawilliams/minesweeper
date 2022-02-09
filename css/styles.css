@@ -83,7 +83,7 @@ h1 {
     position: absolute;
     display: flex;
     top: 300px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
+    /* box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); */
 }
 
 .no_select {
@@ -114,15 +114,10 @@ h1 {
 }
 
 /* hidden cells */
-.evencol > .oddcell, .oddcol > .evencell {
-    background-color: #f6a7c1;
-    border: 1px solid #f6a7c1;
-    color: rgba(255, 255, 255, 0)
-}
-
-.oddcol > .oddcell, .evencol > .evencell {
-    background-color: #f3d1dc;
-    border: 1px solid #f3d1dc;
+.oddcell, .evencell {
+    background-color: #ff8dce;
+    border: 1px solid #ff8dce;
+    border-radius: 10%;
     color: rgba(255, 255, 255, 0)
 }
 
@@ -133,8 +128,8 @@ h1 {
 
 /* visible cells */
 .visible_cell {
-    background-color: #faf0a5;
-    border: 1px solid #f7e4a4;
+    /* background-color: #faf0a5; */
+    border: 1px solid rgba(255,255,255,0);
     color: white;
     text-shadow: 0px 0px 2px black;
 }
