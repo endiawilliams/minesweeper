@@ -194,6 +194,7 @@ const revealAdjEmpties = (currentIndex) => {
 
 const winCheck = () => {
     if (visibleCells.length === nonBombCells) {
+        clearInterval(gameLength)
         modal.style.display = "flex";
         document.querySelector('.win_lose_msg').innerText = 'You win! Play again?'
     }
