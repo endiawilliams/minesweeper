@@ -1,4 +1,5 @@
 let gameStarted = false
+let wonGame = false
 
 const timer = document.getElementById('timer')
 
@@ -156,8 +157,6 @@ const findEmptyCells = () => {
 
 findEmptyCells()
 
-const nonBombCells = numCells.length + emptyCells.length
-
 const revealAdjEmpties = (currentIndex) => {
     let [x, y] = getCoordinates(currentIndex)
 
@@ -184,9 +183,19 @@ const revealAdjEmpties = (currentIndex) => {
     winCheck()
 }
 
+const nonBombCells = numCells.length + emptyCells.length
+
+const confettiSettings = {target: 'confetti_canvas'}
+const confetti = new ConfettiGenerator(confettiSettings)
+
 const winCheck = () => {
     if (visibleCells.length === nonBombCells) {
+        wonGame = true
+
         clearInterval(gameLength)
+        
+        confetti.render()
+        
         modal.style.display = "flex";
         document.querySelector('.win_lose_msg').innerText = 'You win! Play again?'
     }
@@ -322,6 +331,8 @@ gameBoard.addEventListener('contextmenu', e => {
 })
 
 const resetBoard = () => {
+    if (wonGame) confetti.clear()
+    
     gameStarted = false
 
     clearInterval(gameLength)

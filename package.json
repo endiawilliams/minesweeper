@@ -1,0 +1,22 @@
+{
+  "name": "minesweeper",
+  "version": "1.0.0",
+  "description": "The classic game of Minesweeper, reimagined with a cute birthday theme. In place of mines, the game board generates balloons. Be careful not to pop one!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/endiawilliams/minesweeper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/endiawilliams/minesweeper/issues"
+  },
+  "homepage": "https://github.com/endiawilliams/minesweeper#readme",
+  "dependencies": {
+    "confetti-js": "^0.0.18"
+  }
+}
