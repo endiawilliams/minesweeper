@@ -23,10 +23,7 @@ div:hover {
     cursor: default;
 }
 
-.top_border {
-    background: url(../images/garlandfinal.png) round;
-    background-size: 120px;
-    height: 60px;
+.container {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -36,7 +33,7 @@ div:hover {
 
 header {
     position: absolute;
-    top: 110%;
+    top: 40px;
     display: inline-block;
 }
 
