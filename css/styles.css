@@ -82,7 +82,7 @@ h1 {
 .minesweeper_grid {
     position: absolute;
     display: flex;
-    top: 300px;
+    top: 225px;
     /* box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); */
 }
 
@@ -144,7 +144,7 @@ h1 {
 
 .above_grid {
     width: 640px;
-    top: 235px;
+    top: 150px;
     position: absolute;
     display: flex;
     justify-content: space-between;
@@ -171,7 +171,7 @@ h1 {
     justify-content: center;
     align-items: center;
     z-index: 1;
-    top: 302px;
+    top: 227px;
     width: 656px;
     height: 656px; 
     overflow: auto; 
