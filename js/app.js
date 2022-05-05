@@ -21,6 +21,7 @@ let bombCells = []
 let numCells = []
 let emptyCells = []
 let visibleCells = []
+let revealedBombs = []
 
 const offsets = [[0, -1], [0, 1], [1, 0], [-1, 0], [1, -1], [-1, -1], [1, 1], [-1, 1]]
 
@@ -158,6 +159,14 @@ findEmptyCells()
 
 const nonBombCells = numCells.length + emptyCells.length
 
+const winCheck = () => {
+    if (visibleCells.length === nonBombCells) {
+        clearInterval(gameLength)
+        modal.style.display = "flex";
+        document.querySelector('.win_lose_msg').innerText = 'You win! Play again?'
+    }
+}
+
 const revealAdjEmpties = (currentIndex) => {
     let [x, y] = getCoordinates(currentIndex)
 
@@ -184,34 +193,42 @@ const revealAdjEmpties = (currentIndex) => {
     winCheck()
 }
 
-const winCheck = () => {
-    if (visibleCells.length === nonBombCells) {
-        clearInterval(gameLength)
-        modal.style.display = "flex";
-        document.querySelector('.win_lose_msg').innerText = 'You win! Play again?'
-    }
-}
+const popIntervals = [150, 250, 350]
 
-const loseCheck = (currentIndex) => {
-    if (bombCells.includes(currentIndex)) {
-        clearInterval(gameLength)
-        popSound.play()
+const loseAnimation = (currentIndex) => {
+    clearInterval(gameLength)
+    let randomBomb = currentIndex
 
-        for (let i = 0; i < bombCells.length; i++) {
-            let bombCell = bombCells[i]
-            let bombDiv = document.getElementById(`cell${bombCell}`)
+    let revealAllBombs = () => {
+        let indexInBombCells = bombCells.indexOf(randomBomb)
 
-            bombDiv.click()
+        let bombCell = document.getElementById(`cell${randomBomb}`)
+        bombCell.click()
 
-            if (!bombDiv.classList.contains('flagged')) {
-                bombDiv.classList.add('visible_cell')
-                bombDiv.classList.remove('hidden_cell')
-            }
+        if (!bombCell.classList.contains('flagged')) {
+            bombCell.classList.add('visible_cell')
+            bombCell.classList.remove('hidden_cell')
+        }
+        
+        // This allows the sound to loop over itself
+        let newPopSound = popSound.cloneNode()
+        newPopSound.play()
+        
+        bombCells.splice(indexInBombCells, 1)
+        revealedBombs.push(currentIndex)
+
+        if (bombCells.length == 0) {
+            clearInterval(revealAllBombs)
+            modal.style.display = 'flex';
+            document.querySelector('.win_lose_msg').innerText = 'You lose. :( Play again?'
         }
 
-        modal.style.display = 'flex';
-        document.querySelector('.win_lose_msg').innerText = 'You lose. :( Play again?'
+        randomBomb = bombCells[Math.floor(Math.random() * bombCells.length)]
+
+        setTimeout(revealAllBombs, popIntervals[Math.floor(Math.random() * 3)])
     }
+
+    revealAllBombs()
 }
 
 const removeFlag = (currentIndex, elem) => {
@@ -299,16 +316,18 @@ gameBoard.addEventListener('mousedown', e => {
             return
         } else {
             displayCell(elem)
-            visibleCells.push(currentIndex)
 
             if (bombCells.includes(currentIndex)) {
-                loseCheck(currentIndex)
+                loseAnimation(currentIndex)
                 return
             } else {
+                visibleCells.push(currentIndex)
+
                 if (emptyCells.includes(currentIndex)) {
                     revealAdjEmpties(currentIndex)
                     return
                 }
+                
                 winCheck()
             }
         }
@@ -339,6 +358,7 @@ const resetBoard = () => {
     numCells = []
     emptyCells = []
     visibleCells = []
+    revealedBombs = []
 
     createBombs()
     findNums()
