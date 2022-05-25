@@ -14,7 +14,8 @@
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #6dd2ff;
+    /* background-color: #6dd2ff; */
+    background-color: #57C6F8;
     font-weight: bold;
     color: white;
 }
@@ -42,7 +43,7 @@ header {
 
 h1, h2 {
     color: white;
-    text-shadow: 1px 1px 2px black;
+    /* text-shadow: 1px 1px 2px black; */
 }
 
 h1 {
@@ -62,8 +63,8 @@ h2 {
 
 header > p {
     font-family: 'Patrick Hand', cursive;
-    font-size: 2.5em;
-    text-shadow: 1px 1px 2px black;
+    font-size: 2.25em;
+    /* text-shadow: 1px 1px 2px black; */
     width: 100px;
 }
 
@@ -112,15 +113,14 @@ header > p {
     width: 30px;
     margin: 10px 5px;
     padding: 5px;
-    font-weight: bold;
-    font-size: 20px;
-    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.4);
+    font-weight: 1000;
+    font-size: 25px;
 }
 
 /* hidden cells */
 .hidden_cell {
-    background-color: rgb(255, 141, 206);
-    border: 1px solid rgb(255, 141, 206);
+    background-color: #FF80AB;
+    border: 1px solid #FF80AB;
     border-radius: 10%;
     color: rgba(255, 255, 255, 0)
 }
@@ -132,16 +132,15 @@ header > p {
 
 /* visible cells */
 .visible_cell {
-    background-color: rgb(255, 198, 231);
-    border: 1px solid rgba(255,255,255,0);
+    background-color: #FBD1DF;
+    border: 1px solid #FBD1DF;
     border-radius: 10%;
-    color: white;
-    text-shadow: 0px 0px 2px black;
+    color: #FF80AB;
 }
 
 .balloon {
-    height: 25px;
-    width: 25px;
+    height: 30px;
+    width: 30px;
 }
 
 .refresh_button {
@@ -151,8 +150,8 @@ header > p {
 }
 
 .cupcake_img {
-    height: 25px;
-    width: 25px;
+    height: 30px;
+    width: 30px;
 }
 
 .modal {
