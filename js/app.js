@@ -102,7 +102,7 @@ const createCells = () => {
 createCells()
 
 const placeBomb = (randomCell) => {
-    let randomBomb = Math.floor(Math.random() * 6)
+    let randomBomb = Math.floor(Math.random() * 5)
     document.getElementById(`cell${randomCell}`).innerHTML = `<img src="images/balloon${randomBomb}.png" alt="balloon" class="balloon">`
 }
 
@@ -220,7 +220,7 @@ const loseAnimation = (currentIndex) => {
         if (bombCells.length == 0) {
             clearInterval(revealAllBombs)
             modal.style.display = 'flex';
-            document.querySelector('.win_lose_msg').innerText = 'You lose. :( Play again?'
+            document.querySelector('.win_lose_msg').innerText = 'Try again'
         }
 
         randomBomb = bombCells[Math.floor(Math.random() * bombCells.length)]
@@ -239,7 +239,7 @@ const removeFlag = (currentIndex, elem) => {
     }
 
     if (bombCells.includes(currentIndex)) {
-        let randomColor = Math.floor(Math.random() * 6)
+        let randomColor = Math.floor(Math.random() * 5)
         let newImg = document.createElement('img')
         let newBalloon = elem.appendChild(newImg)
         newBalloon.setAttribute('src', `images/balloon${randomColor}.png`)
@@ -366,9 +366,9 @@ const resetBoard = () => {
     findEmptyCells()
 }
 
-const refreshButtons = document.querySelectorAll('.refresh_button')
+const winLoseModal = document.querySelectorAll('#modal_content')
 
-refreshButtons.forEach(button => {
+winLoseModal.forEach(button => {
     button.addEventListener('click', () => {
         resetBoard()
         clearInterval(gameLength)
