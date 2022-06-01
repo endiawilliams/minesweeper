@@ -199,20 +199,21 @@ const loseAnimation = (currentIndex) => {
     clearInterval(gameLength)
     let randomBomb = currentIndex
 
-    let revealAllBombs = () => {
+    const revealAllBombs = () => {
         let indexInBombCells = bombCells.indexOf(randomBomb)
 
         let bombCell = document.getElementById(`cell${randomBomb}`)
-        bombCell.click()
 
         if (!bombCell.classList.contains('flagged')) {
+            bombCell.click()
+
             bombCell.classList.add('visible_cell')
             bombCell.classList.remove('hidden_cell')
+
+            // This allows the sound to loop over itself
+            let newPopSound = popSound.cloneNode()
+            newPopSound.play()
         }
-        
-        // This allows the sound to loop over itself
-        let newPopSound = popSound.cloneNode()
-        newPopSound.play()
         
         bombCells.splice(indexInBombCells, 1)
         revealedBombs.push(currentIndex)
