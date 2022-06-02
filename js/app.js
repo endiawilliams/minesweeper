@@ -18,10 +18,10 @@ let boardHeight = 16
 let totalBombs = 40
 
 let bombCells = []
+let unflaggedBombs = []
 let numCells = []
 let emptyCells = []
 let visibleCells = []
-let revealedBombs = []
 
 const offsets = [[0, -1], [0, 1], [1, 0], [-1, 0], [1, -1], [-1, -1], [1, 1], [-1, 1]]
 
@@ -62,11 +62,13 @@ const createNum = (currentIndex) => {
 }
 
 const gameBoard = document.querySelector('.minesweeper_grid')
-const popSound = document.getElementById('pop_sound')
 const balloon = document.querySelector('.balloon')
 const cupcake = document.querySelector('.cupcake_img')
 const modal = document.getElementById('win_lose_modal')
 const modalContent = document.getElementById('modal_content')
+
+const popSound = document.getElementById('pop_sound')
+const winSound = document.getElementById('win_sound')
 
 const createColumns = () => {
     for (let i = 0; i < boardWidth; i++) {
@@ -114,6 +116,7 @@ const createBombs = () => {
 
         if (!bombCells.includes(randomCell)) {
             bombCells.push(randomCell)
+            unflaggedBombs.push(randomCell)
             count += 1
             placeBomb(randomCell)
         }
@@ -163,7 +166,8 @@ const winCheck = () => {
     if (visibleCells.length === nonBombCells) {
         clearInterval(gameLength)
         modal.style.display = "flex";
-        document.querySelector('.win_lose_msg').innerText = 'You win! Play again?'
+        document.querySelector('.win_lose_msg').innerText = 'Play again'
+        winSound.play()
     }
 }
 
@@ -197,12 +201,11 @@ const popIntervals = [150, 250, 350]
 
 const loseAnimation = (currentIndex) => {
     clearInterval(gameLength)
-    let randomBomb = currentIndex
 
     const revealAllBombs = () => {
-        let indexInBombCells = bombCells.indexOf(randomBomb)
+        let indexInUnflagged = unflaggedBombs.indexOf(currentIndex)
 
-        let bombCell = document.getElementById(`cell${randomBomb}`)
+        let bombCell = document.getElementById(`cell${currentIndex}`)
 
         if (!bombCell.classList.contains('flagged')) {
             bombCell.click()
@@ -215,16 +218,15 @@ const loseAnimation = (currentIndex) => {
             newPopSound.play()
         }
         
-        bombCells.splice(indexInBombCells, 1)
-        revealedBombs.push(currentIndex)
+        unflaggedBombs.splice(indexInUnflagged, 1)
 
-        if (bombCells.length == 0) {
+        if (unflaggedBombs.length == 0) {
             clearInterval(revealAllBombs)
             modal.style.display = 'flex';
-            document.querySelector('.win_lose_msg').innerText = 'Try again'
+            document.querySelector('.win_lose_msg').innerText = 'Play again'
         }
 
-        randomBomb = bombCells[Math.floor(Math.random() * bombCells.length)]
+        currentIndex = unflaggedBombs[Math.floor(Math.random() * unflaggedBombs.length)]
 
         setTimeout(revealAllBombs, popIntervals[Math.floor(Math.random() * 3)])
     }
@@ -232,29 +234,37 @@ const loseAnimation = (currentIndex) => {
     revealAllBombs()
 }
 
-const removeFlag = (currentIndex, elem) => {
+const removeFlag = (index, elem) => {
     elem.classList.remove('flagged')
+
+    if (bombCells.includes(index)) {
+        unflaggedBombs.push(index)
+    }
     
     while (elem.hasChildNodes()) {
         elem.removeChild(elem.lastChild)
     }
 
-    if (bombCells.includes(currentIndex)) {
+    if (bombCells.includes(index)) {
         let randomColor = Math.floor(Math.random() * 5)
         let newImg = document.createElement('img')
         let newBalloon = elem.appendChild(newImg)
         newBalloon.setAttribute('src', `images/balloon${randomColor}.png`)
         newBalloon.setAttribute('class', 'balloon')
         newBalloon.setAttribute('alt', 'balloon')
-    } else if (numCells.includes(currentIndex)) {
-        createNum(currentIndex)
+    } else if (numCells.includes(index)) {
+        createNum(index)
     } else {
         return
     }
 }
 
-const addFlag = (elem) => {
+const addFlag = (index, elem) => {
     elem.classList.add('flagged')
+
+    if (unflaggedBombs.includes(index)) {
+        unflaggedBombs.splice(unflaggedBombs.indexOf(index), 1)
+    }
     
     while (elem.hasChildNodes()) {
         elem.removeChild(elem.lastChild)
@@ -309,7 +319,7 @@ gameBoard.addEventListener('mousedown', e => {
         } else if (isFlagged) {
             removeFlag(currentIndex, targetCell)
         } else {
-            addFlag(targetCell)
+            addFlag(currentIndex, targetCell)
         }
     // Primary/left click
     } else if (e.button === 0) {
@@ -356,10 +366,10 @@ const resetBoard = () => {
     createCells()
 
     bombCells = []
+    unflaggedBombs = []
     numCells = []
     emptyCells = []
     visibleCells = []
-    revealedBombs = []
 
     createBombs()
     findNums()
