@@ -320,6 +320,8 @@ gameBoard.addEventListener('mousedown', e => {
         gameLength = setInterval(() => {
             if (seconds < 59) {
                 seconds++
+            } else if (minutes == 59 && seconds == 59) {
+                return
             } else {
                 seconds = 0
                 minutes++
