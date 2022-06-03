@@ -130,7 +130,7 @@ h1 {
 .hidden_cell {
     background-color: #FF80AB;
     border-radius: 10%;
-    color: rgba(255, 255, 255, 0)
+    color: rgba(255, 255, 255, 0);
 }
 
 /* hidden cells with balloons */

@@ -105,7 +105,7 @@ const createCells = () => {
 createCells()
 
 const placeBomb = (randomCell) => {
-    let randomBomb = Math.floor(Math.random() * 5)
+    let randomBomb = Math.floor(Math.random() * 4) + 1
     document.getElementById(`cell${randomCell}`).innerHTML = `<img src="images/balloon${randomBomb}.png" alt="balloon" class="balloon">`
 }
 
