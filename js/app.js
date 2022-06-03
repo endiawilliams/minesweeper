@@ -162,12 +162,49 @@ findEmptyCells()
 
 const nonBombCells = numCells.length + emptyCells.length
 
+const fire = (particleRatio, opts) => {
+    let count = 200
+    let defaults = {
+        origin: { y: 0.7 } 
+    }
+
+    confetti(Object.assign({}, defaults, opts, {
+        particleCount: Math.floor(count * particleRatio)
+    }))
+}
+
+const confettiExplosion = () => {
+    fire(0.25, {
+        spread: 26,
+        startVelocity: 55,
+    })
+    fire(0.2, {
+        spread: 60,
+    })
+    fire(0.35, {
+        spread: 100,
+        decay: 0.91,
+        scalar: 0.8
+    })
+    fire(0.1, {
+        spread: 120,
+        startVelocity: 25,
+        decay: 0.92,
+        scalar: 1.2
+    })
+    fire(0.1, {
+        spread: 120,
+        startVelocity: 45,
+    })
+}
+
 const winCheck = () => {
     if (visibleCells.length === nonBombCells) {
         clearInterval(gameLength)
         modal.style.display = "flex";
         document.querySelector('.win_lose_msg').innerText = 'Play again'
         winSound.play()
+        confettiExplosion()
     }
 }
 
@@ -223,7 +260,7 @@ const loseAnimation = (currentIndex) => {
         if (unflaggedBombs.length == 0) {
             clearInterval(revealAllBombs)
             modal.style.display = 'flex';
-            document.querySelector('.win_lose_msg').innerText = 'Play again'
+            document.querySelector('.win_lose_msg').innerText = 'Try again'
         }
 
         currentIndex = unflaggedBombs[Math.floor(Math.random() * unflaggedBombs.length)]
