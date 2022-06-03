@@ -1,4 +1,5 @@
 let gameStarted = false
+let userLost = false
 
 const timer = document.getElementById('timer')
 
@@ -362,12 +363,13 @@ gameBoard.addEventListener('mousedown', e => {
         }
     // Primary/left click
     } else if (e.button === 0) {
-        if (isFlagged || isVisible) {
+        if (isFlagged || isVisible || userLost) {
             return
         } else {
             displayCell(elem)
 
             if (bombCells.includes(currentIndex)) {
+                userLost = true
                 loseAnimation(currentIndex)
                 return
             } else {
@@ -392,6 +394,7 @@ gameBoard.addEventListener('contextmenu', e => {
 
 const resetBoard = () => {
     gameStarted = false
+    userLost = false
 
     clearInterval(gameLength)
     createTimer()
